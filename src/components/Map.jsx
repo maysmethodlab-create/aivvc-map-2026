@@ -67,6 +67,7 @@ const RAW = RAW_DATA;
 // reconciliation diff). We display 528 to stay consistent with Levi's
 // communications. Percentage math still uses the computed total.
 const TOTAL_APPS_DISPLAY = 528;
+const TOTAL_INSTITUTIONS_DISPLAY = 160; // Levi's external number; deduped data has 152
 const TOTAL_APPS = RAW.reduce((s, x) => s + x.count, 0);
 const TOTAL_INSTITUTIONS = RAW.length;
 
@@ -343,7 +344,7 @@ export default function Map() {
               color: PALETTE.muted,
             }}
           >
-            {TOTAL_APPS_DISPLAY} applications. {TOTAL_INSTITUTIONS} institutions. The
+            {TOTAL_APPS_DISPLAY} applications. {TOTAL_INSTITUTIONS_DISPLAY} institutions. The
             inaugural Challenge drew submissions from research universities,
             regional campuses, liberal arts colleges, and master's-focused
             universities across all four U.S. census regions.
@@ -436,7 +437,7 @@ export default function Map() {
         >
           {[
             { num: TOTAL_APPS_DISPLAY, label: "Applications" },
-            { num: TOTAL_INSTITUTIONS, label: "Institutions" },
+            { num: TOTAL_INSTITUTIONS_DISPLAY, label: "Institutions" },
             { num: top10Apps, label: "From Top 10 Schools" },
             {
               num: Math.round((top10Apps / TOTAL_APPS) * 100) + "%",
@@ -1072,6 +1073,10 @@ export default function Map() {
                   key={d.unitid + "-" + i}
                   onMouseEnter={() => setHovered(d.unitid)}
                   onMouseLeave={() => setHovered(null)}
+                  onClick={() => {
+                    setSearch(d.name);
+                    setZoomedSchool(d);
+                  }}
                   style={{
                     padding: "10px 18px",
                     borderBottom: `1px solid ${PALETTE.paleRule}`,

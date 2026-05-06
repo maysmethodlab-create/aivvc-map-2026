@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-06T15:21:51.562Z",
+  "generatedAt": "2026-05-06T17:19:40.904Z",
   "classifiedTotal": 438,
   "coverage": {
     "classified": 438,
@@ -55,7 +55,7 @@
     "West": {
       "Finance": 5,
       "Personal & Lifestyle": 5,
-      "Healthcare": 14,
+      "Healthcare": 13,
       "Education": 10,
       "Productivity & Workflow": 6,
       "Industrial / Energy": 11,
@@ -76,7 +76,7 @@
       "Frontier / Deep Tech": 2
     },
     "South": {
-      "Productivity & Workflow": 40,
+      "Productivity & Workflow": 38,
       "Education": 33,
       "Healthcare": 62,
       "Finance": 10,
@@ -212,8 +212,7 @@
       "Personal & Lifestyle",
       "Frontier / Deep Tech",
       "Media / Creative",
-      "Industrial / Energy",
-      "Healthcare"
+      "Industrial / Energy"
     ],
     "129020": [
       "Finance",
@@ -370,7 +369,7 @@
     "164580": [
       "Personal & Lifestyle"
     ],
-    "164924": [
+    "164988": [
       "Personal & Lifestyle",
       "Productivity & Workflow",
       "Public Sector / Civic"
@@ -603,8 +602,7 @@
       "Industrial / Energy"
     ],
     "228802": [
-      "Education",
-      "Productivity & Workflow"
+      "Education"
     ],
     "228875": [
       "Productivity & Workflow",
