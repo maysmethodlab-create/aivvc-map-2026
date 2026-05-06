@@ -63,6 +63,24 @@ const TARGET_DISPLAY = {
   mixed: "Mixed segments",
 };
 
+// Census-region lookup keyed by full state name (matches us-atlas TopoJSON properties.name).
+const STATE_NAME_TO_REGION = {
+  Connecticut: "Northeast", Maine: "Northeast", Massachusetts: "Northeast",
+  "New Hampshire": "Northeast", "New Jersey": "Northeast", "New York": "Northeast",
+  Pennsylvania: "Northeast", "Rhode Island": "Northeast", Vermont: "Northeast",
+  Illinois: "Midwest", Indiana: "Midwest", Iowa: "Midwest", Kansas: "Midwest",
+  Michigan: "Midwest", Minnesota: "Midwest", Missouri: "Midwest", Nebraska: "Midwest",
+  "North Dakota": "Midwest", Ohio: "Midwest", "South Dakota": "Midwest", Wisconsin: "Midwest",
+  Alabama: "South", Arkansas: "South", Delaware: "South", "District of Columbia": "South",
+  Florida: "South", Georgia: "South", Kentucky: "South", Louisiana: "South",
+  Maryland: "South", Mississippi: "South", "North Carolina": "South", Oklahoma: "South",
+  "South Carolina": "South", Tennessee: "South", Texas: "South", Virginia: "South",
+  "West Virginia": "South",
+  Alaska: "West", Arizona: "West", California: "West", Colorado: "West",
+  Hawaii: "West", Idaho: "West", Montana: "West", Nevada: "West",
+  "New Mexico": "West", Oregon: "West", Utah: "West", Washington: "West", Wyoming: "West",
+};
+
 const STATE_FULL_NAMES = {
   AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
   CO: "Colorado", CT: "Connecticut", DE: "Delaware", DC: "District of Columbia",
@@ -905,16 +923,31 @@ export default function Map() {
                   </filter>
                 </defs>
 
-                {stateFeatures.map((feat, i) => (
-                  <path
-                    key={i}
-                    d={pathGenerator(feat) || ""}
-                    fill="#faf6ec"
-                    stroke="#c9bfa6"
-                    strokeWidth={0.8}
-                    strokeLinejoin="round"
-                  />
-                ))}
+                {stateFeatures.map((feat, i) => {
+                  const stateName = feat.properties?.name || "";
+                  const stateRegion = STATE_NAME_TO_REGION[stateName] || null;
+                  let fill = "#faf6ec";
+                  let stroke = "#c9bfa6";
+                  if (selectedRegion) {
+                    if (stateRegion === selectedRegion) {
+                      fill = "#f5d9d9"; // soft maroon tint
+                      stroke = PALETTE.maroon;
+                    } else {
+                      fill = "#ece5d5"; // muted, dimmed
+                      stroke = "#d6cdb5";
+                    }
+                  }
+                  return (
+                    <path
+                      key={i}
+                      d={pathGenerator(feat) || ""}
+                      fill={fill}
+                      stroke={stroke}
+                      strokeWidth={selectedRegion && stateRegion === selectedRegion ? 1.4 : 0.8}
+                      strokeLinejoin="round"
+                    />
+                  );
+                })}
 
                 {/* Non-top-10 dots, smallest first */}
                 {filtered
