@@ -62,6 +62,20 @@ const TARGET_DISPLAY = {
   mixed: "Mixed segments",
 };
 
+const STATE_FULL_NAMES = {
+  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
+  CO: "Colorado", CT: "Connecticut", DE: "Delaware", DC: "District of Columbia",
+  FL: "Florida", GA: "Georgia", HI: "Hawaii", ID: "Idaho", IL: "Illinois",
+  IN: "Indiana", IA: "Iowa", KS: "Kansas", KY: "Kentucky", LA: "Louisiana",
+  ME: "Maine", MD: "Maryland", MA: "Massachusetts", MI: "Michigan", MN: "Minnesota",
+  MS: "Mississippi", MO: "Missouri", MT: "Montana", NE: "Nebraska", NV: "Nevada",
+  NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico", NY: "New York",
+  NC: "North Carolina", ND: "North Dakota", OH: "Ohio", OK: "Oklahoma",
+  OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island", SC: "South Carolina",
+  SD: "South Dakota", TN: "Tennessee", TX: "Texas", UT: "Utah", VT: "Vermont",
+  VA: "Virginia", WA: "Washington", WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
+};
+
 const RAW = RAW_DATA;
 // Computed total from data is 529; Levi reports 528 externally (single-app
 // reconciliation diff). We display 528 to stay consistent with Levi's
@@ -201,12 +215,17 @@ export default function Map() {
 
   const filtered = useMemo(() => {
     if (search === "") return RAW;
-    const q = search.toLowerCase();
-    return RAW.filter(
-      (d) =>
-        d.name.toLowerCase().includes(q) ||
-        d.cityState.toLowerCase().includes(q)
-    );
+    const q = search.toLowerCase().trim();
+    if (!q) return RAW;
+    return RAW.filter((d) => {
+      if (d.name.toLowerCase().includes(q)) return true;
+      if (d.cityState.toLowerCase().includes(q)) return true;
+      const stateName = STATE_FULL_NAMES[d.state]?.toLowerCase() || "";
+      if (stateName.includes(q)) return true;
+      // 2-letter state code exact match: e.g. "ca" → state="CA"
+      if (q.length <= 2 && d.state?.toLowerCase() === q) return true;
+      return false;
+    });
   }, [search]);
 
   const sorted = useMemo(() => [...RAW].sort((a, b) => b.count - a.count), []);
@@ -271,16 +290,15 @@ export default function Map() {
   };
 
   useEffect(() => {
-    if (search.length >= 3) {
-      const match = RAW.find((d) =>
-        d.name.toLowerCase().includes(search.toLowerCase())
-      );
-      if (match) setZoomedSchool(match);
-      else setZoomedSchool(null);
+    if (search.length >= 3 && filtered.length > 0 && filtered.length < RAW.length) {
+      // Pick the highest-count match so a "California" search highlights UC Berkeley,
+      // not the alphabetical first match.
+      const top = filtered.slice().sort((a, b) => b.count - a.count)[0];
+      setZoomedSchool(top);
     } else {
       setZoomedSchool(null);
     }
-  }, [search]);
+  }, [search, filtered]);
 
   return (
     <div
@@ -388,23 +406,106 @@ export default function Map() {
               Find your institution.
             </div>
           </div>
-          <input
-            type="text"
-            placeholder="Type a school or city..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              padding: "12px 16px",
-              fontFamily: "'Source Serif Pro', serif",
-              fontSize: 15,
-              border: `1px solid ${PALETTE.cream}`,
-              background: PALETTE.paper,
-              color: PALETTE.ink,
-              minWidth: 320,
-              outline: "none",
-              flex: "1 1 320px",
-            }}
-          />
+          <div style={{ flex: "1 1 320px", position: "relative", minWidth: 320 }}>
+            <input
+              type="text"
+              placeholder="Type a school, city, or state…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                padding: "12px 16px",
+                fontFamily: "'Source Serif Pro', serif",
+                fontSize: 15,
+                border: `1px solid ${PALETTE.cream}`,
+                background: PALETTE.paper,
+                color: PALETTE.ink,
+                width: "100%",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
+            {search.length >= 2 && filtered.length > 0 && filtered.length < RAW.length && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "calc(100% + 4px)",
+                  left: 0,
+                  right: 0,
+                  background: PALETTE.paper,
+                  border: `1px solid ${PALETTE.ink}`,
+                  zIndex: 10,
+                  maxHeight: 320,
+                  overflowY: "auto",
+                  boxShadow: "0 6px 16px rgba(0,0,0,0.18)",
+                }}
+              >
+                <div
+                  style={{
+                    padding: "8px 14px",
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: 10,
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                    color: PALETTE.faint,
+                    borderBottom: `1px solid ${PALETTE.paleRule}`,
+                    background: PALETTE.cream,
+                  }}
+                >
+                  {filtered.length} match{filtered.length !== 1 ? "es" : ""} · click to spotlight
+                </div>
+                {filtered
+                  .slice()
+                  .sort((a, b) => b.count - a.count)
+                  .slice(0, 30)
+                  .map((d) => (
+                    <div
+                      key={d.unitid}
+                      onClick={() => {
+                        setSearch(d.name);
+                        setZoomedSchool(d);
+                      }}
+                      style={{
+                        padding: "8px 14px",
+                        borderBottom: `1px solid ${PALETTE.paleRule}`,
+                        cursor: "pointer",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "baseline",
+                        gap: 12,
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = PALETTE.cream)}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                    >
+                      <div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: PALETTE.ink }}>
+                          {d.name}
+                        </div>
+                        <div
+                          style={{
+                            fontFamily: "'DM Mono', monospace",
+                            fontSize: 10,
+                            color: PALETTE.faint,
+                            marginTop: 2,
+                          }}
+                        >
+                          {d.cityState}
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "'Playfair Display', serif",
+                          fontWeight: 900,
+                          fontSize: 16,
+                          color: PALETTE.maroon,
+                        }}
+                      >
+                        {d.count}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
           {zoomedSchool && (
             <div
               style={{
@@ -1140,76 +1241,9 @@ export default function Map() {
           </div>
         </div>
 
-        {/* Concentration / Pareto */}
-        <div style={{ marginBottom: 32 }}>
-          <SectionHeading num="03" title="Concentration of Applications" />
-          <div
-            style={{
-              background: PALETTE.paper,
-              border: `1px solid ${PALETTE.ink}`,
-              padding: 24,
-              display: "grid",
-              gridTemplateColumns: "1.6fr 1fr",
-              gap: 32,
-            }}
-          >
-            <div>
-              <ParetoChart data={paretoData} />
-              <div
-                style={{
-                  marginTop: 14,
-                  fontFamily: "'DM Mono', monospace",
-                  fontSize: 10,
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  color: "#666",
-                }}
-              >
-                Cumulative share of applications, by school rank
-              </div>
-            </div>
-            <div style={{ fontSize: 14, lineHeight: 1.55 }}>
-              <p style={{ margin: "0 0 12px 0" }}>
-                Texas A&amp;M alone sent{" "}
-                <strong style={{ color: PALETTE.maroon }}>
-                  {Math.round((148 / TOTAL_APPS) * 100)}%
-                </strong>{" "}
-                of all applications, the natural gravity of the host institution.
-              </p>
-              <p style={{ margin: "0 0 12px 0" }}>
-                The top <strong>10</strong> schools accounted for{" "}
-                <strong style={{ color: PALETTE.maroon }}>
-                  {Math.round((top10Apps / TOTAL_APPS) * 100)}%
-                </strong>
-                . The top <strong>30</strong> schools accounted for{" "}
-                <strong style={{ color: PALETTE.maroon }}>
-                  {Math.round((top30Apps / TOTAL_APPS) * 100)}%
-                </strong>
-                .
-              </p>
-              <p style={{ margin: "0 0 12px 0" }}>
-                <strong>{longTailInstitutions}</strong> institutions sent
-                exactly one application. The shape of the curve says this:
-                a host-led launch with a genuinely long national tail.
-              </p>
-              <p
-                style={{
-                  margin: 0,
-                  fontStyle: "italic",
-                  color: "#666",
-                  fontSize: 13,
-                }}
-              >
-                A national platform with a heavy host anchor, broadening
-                across R1, regional, and master's-focused institutions.
-              </p>
-            </div>
-          </div>
-        </div>
-
         {/* Carnegie breakdown */}
         <div style={{ marginBottom: 32 }}>
-          <SectionHeading num="04" title="By Institution Type" />
+          <SectionHeading num="03" title="By Institution Type" />
           <BarBreakdown
             data={carnegieStats}
             total={TOTAL_APPS}
@@ -1534,39 +1568,65 @@ function ThemesSection({ selectedTheme, setSelectedTheme }) {
 
   return (
     <>
-      <div style={{ marginBottom: 32 }}>
-        <SectionHeading num="05" title="By Venture Theme" />
-        <BarBreakdown
-          data={themeRows}
-          total={readableTotal}
-          colorMap={THEME_COLORS}
-          onRowClick={(k) => setSelectedTheme(selectedTheme === k ? null : k)}
-          activeKey={selectedTheme}
-        />
-        <div
-          style={{
-            marginTop: 10,
-            fontFamily: "'DM Mono', monospace",
-            fontSize: 10,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: PALETTE.faint,
-          }}
-        >
-          Click a theme to see where those ventures came from on the map. Themes inferred from {readableTotal} submitted venture snapshots ({Math.round((readableTotal / TOTAL_APPS_DISPLAY) * 100)}% coverage).
-        </div>
+      {/* Section 04: Where the building is happening */}
+      <div style={{ marginBottom: 14 }}>
+        <SectionHeading num="04" title="Where the building is happening" />
       </div>
-
       <div
         style={{
           marginBottom: 32,
           display: "grid",
-          gridTemplateColumns: "1.4fr 1fr 1fr",
+          gridTemplateColumns: "1.2fr 1fr",
           gap: 24,
         }}
       >
         <div>
-          <SectionHeading num="06" title="What students are building" />
+          <div
+            style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: PALETTE.maroon,
+              marginBottom: 8,
+            }}
+          >
+            Industries
+          </div>
+          <BarBreakdown
+            data={themeRows}
+            total={readableTotal}
+            colorMap={THEME_COLORS}
+            onRowClick={(k) => setSelectedTheme(selectedTheme === k ? null : k)}
+            activeKey={selectedTheme}
+          />
+          <div
+            style={{
+              marginTop: 10,
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: PALETTE.faint,
+            }}
+          >
+            Click a theme to spotlight those schools on the map.
+          </div>
+        </div>
+
+        <div>
+          <div
+            style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: PALETTE.maroon,
+              marginBottom: 8,
+            }}
+          >
+            What's powering them
+          </div>
           <div
             style={{
               background: PALETTE.paper,
@@ -1597,7 +1657,7 @@ function ThemesSection({ selectedTheme, setSelectedTheme }) {
                         color: "#666",
                       }}
                     >
-                      {n} ventures · {pct.toFixed(0)}%
+                      {n} · {pct.toFixed(0)}%
                     </span>
                   </div>
                   <div style={{ height: 8, background: PALETTE.paleRule }}>
@@ -1613,10 +1673,46 @@ function ThemesSection({ selectedTheme, setSelectedTheme }) {
               );
             })}
           </div>
+          <div
+            style={{
+              marginTop: 10,
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: PALETTE.faint,
+            }}
+          >
+            Themes inferred from {readableTotal} submitted snapshots ({Math.round((readableTotal / TOTAL_APPS_DISPLAY) * 100)}% coverage).
+          </div>
         </div>
+      </div>
 
+      {/* Section 05: Who's Building */}
+      <div style={{ marginBottom: 14 }}>
+        <SectionHeading num="05" title="Who's building" />
+      </div>
+      <div
+        style={{
+          marginBottom: 32,
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+        }}
+      >
         <div>
-          <SectionHeading num="07" title="Stage" />
+          <div
+            style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: PALETTE.maroon,
+              marginBottom: 8,
+            }}
+          >
+            Venture stage
+          </div>
           <div
             style={{
               background: PALETTE.paper,
@@ -1665,7 +1761,18 @@ function ThemesSection({ selectedTheme, setSelectedTheme }) {
         </div>
 
         <div>
-          <SectionHeading num="08" title="Target customer" />
+          <div
+            style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: PALETTE.maroon,
+              marginBottom: 8,
+            }}
+          >
+            Target customer
+          </div>
           <div
             style={{
               background: PALETTE.paper,
