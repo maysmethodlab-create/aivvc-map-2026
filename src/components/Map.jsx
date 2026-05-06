@@ -1113,7 +1113,17 @@ export default function Map() {
                           fill={PALETTE.gold}
                           letterSpacing="0.1em"
                         >
-                          {d.count} APP{d.count !== 1 ? "S" : ""} · {carnLabel}
+                          {(() => {
+                            if (hasThemeFilter) {
+                              const tc = themeCountForSchool(d.unitid);
+                              const themeLabel = onlyTheme || "selected themes";
+                              if (tc !== null) {
+                                return `${tc} ${themeLabel.toUpperCase()} APP${tc !== 1 ? "S" : ""}`;
+                              }
+                              return `1–2 ${themeLabel.toUpperCase()} APPS`;
+                            }
+                            return `${d.count} APP${d.count !== 1 ? "S" : ""} · ${carnLabel}`;
+                          })()}
                         </text>
                       </g>
                     );
@@ -1189,82 +1199,193 @@ export default function Map() {
                 top: 0,
               }}
             >
-              {scaleMode === "count"
+              {hasThemeFilter
+                ? `Ranked: ${onlyTheme ? onlyTheme + " " : ""}Submissions`
+                : scaleMode === "count"
                 ? "Ranked: Total Applications"
                 : "Ranked: Apps per 1k Students"}
             </div>
-            {(scaleMode === "count" ? sorted : perCapitaSorted).map((d, i) => {
-              const isFiltered = filtered.includes(d) || filtered.some((f) => f.unitid === d.unitid);
-              const isZoomed = zoomedSchool?.unitid === d.unitid;
-              return (
-                <div
-                  key={d.unitid + "-" + i}
-                  onMouseEnter={() => setHovered(d.unitid)}
-                  onMouseLeave={() => setHovered(null)}
-                  onClick={() => {
-                    setSearch(d.name);
-                    setZoomedSchool(d);
-                  }}
-                  style={{
-                    padding: "10px 18px",
-                    borderBottom: `1px solid ${PALETTE.paleRule}`,
-                    display: "grid",
-                    gridTemplateColumns: "32px 1fr auto",
-                    gap: 10,
-                    alignItems: "baseline",
-                    cursor: "pointer",
-                    opacity: isFiltered ? 1 : 0.3,
-                    background: isZoomed
-                      ? "#fff8e0"
-                      : hovered === d.unitid
-                      ? PALETTE.cream
-                      : "transparent",
-                  }}
-                >
+            {(() => {
+              // When a theme is selected, build a theme-specific ranking.
+              // Show only schools with safe count >= 3 (privacy rule), sorted by
+              // sum of selected theme counts. Schools with 1-2 in theme appear
+              // as a single aggregated row at the bottom.
+              if (hasThemeFilter) {
+                const named = [];
+                let smallCount = 0;
+                let smallApps = 0;
+                for (const d of RAW) {
+                  const safe = themeByUnitidSafe[String(d.unitid)] || {};
+                  const presence = themePresence[String(d.unitid)] || [];
+                  let total = 0;
+                  let anyKnown = false;
+                  for (const t of selectedThemes) {
+                    if (safe[t] !== undefined) {
+                      total += safe[t];
+                      anyKnown = true;
+                    }
+                  }
+                  if (anyKnown) {
+                    named.push({ d, total });
+                  } else if (presence.some((t) => selectedThemes.has(t))) {
+                    smallCount++;
+                    smallApps += 1;
+                  }
+                }
+                named.sort((a, b) => b.total - a.total);
+                return (
+                  <>
+                    {named.map(({ d, total }, i) => {
+                      const isZoomed = zoomedSchool?.unitid === d.unitid;
+                      return (
+                        <div
+                          key={d.unitid + "-" + i}
+                          onMouseEnter={() => setHovered(d.unitid)}
+                          onMouseLeave={() => setHovered(null)}
+                          onClick={() => {
+                            setSearch(d.name);
+                            setZoomedSchool(d);
+                          }}
+                          style={{
+                            padding: "10px 18px",
+                            borderBottom: `1px solid ${PALETTE.paleRule}`,
+                            display: "grid",
+                            gridTemplateColumns: "32px 1fr auto",
+                            gap: 10,
+                            alignItems: "baseline",
+                            cursor: "pointer",
+                            background: isZoomed
+                              ? "#fff8e0"
+                              : hovered === d.unitid
+                              ? PALETTE.cream
+                              : "transparent",
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontFamily: "'DM Mono', monospace",
+                              fontSize: 11,
+                              color: PALETTE.faint,
+                            }}
+                          >
+                            {String(i + 1).padStart(3, "0")}
+                          </div>
+                          <div>
+                            <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.2 }}>
+                              {d.name}
+                            </div>
+                            <div
+                              style={{
+                                fontFamily: "'DM Mono', monospace",
+                                fontSize: 9,
+                                color: PALETTE.faint,
+                                marginTop: 2,
+                                letterSpacing: "0.05em",
+                              }}
+                            >
+                              {d.cityState} · {total} of {d.count}
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              fontFamily: "'Playfair Display', serif",
+                              fontWeight: 900,
+                              fontSize: 18,
+                              color: PALETTE.maroon,
+                            }}
+                          >
+                            {total}
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {smallCount > 0 && (
+                      <div
+                        style={{
+                          padding: "12px 18px",
+                          borderBottom: `1px solid ${PALETTE.paleRule}`,
+                          fontSize: 12,
+                          color: PALETTE.muted,
+                          fontStyle: "italic",
+                          background: PALETTE.cream,
+                        }}
+                      >
+                        + {smallCount} more institution{smallCount === 1 ? "" : "s"} with 1–2 submission{smallCount === 1 ? "" : "s"} each
+                        (names not shown to protect small-team identity).
+                      </div>
+                    )}
+                  </>
+                );
+              }
+
+              // Default ranking: all institutions by total apps or per-capita.
+              return (scaleMode === "count" ? sorted : perCapitaSorted).map((d, i) => {
+                const isFiltered = filtered.includes(d) || filtered.some((f) => f.unitid === d.unitid);
+                const isZoomed = zoomedSchool?.unitid === d.unitid;
+                return (
                   <div
+                    key={d.unitid + "-" + i}
+                    onMouseEnter={() => setHovered(d.unitid)}
+                    onMouseLeave={() => setHovered(null)}
+                    onClick={() => {
+                      setSearch(d.name);
+                      setZoomedSchool(d);
+                    }}
                     style={{
-                      fontFamily: "'DM Mono', monospace",
-                      fontSize: 11,
-                      color: PALETTE.faint,
+                      padding: "10px 18px",
+                      borderBottom: `1px solid ${PALETTE.paleRule}`,
+                      display: "grid",
+                      gridTemplateColumns: "32px 1fr auto",
+                      gap: 10,
+                      alignItems: "baseline",
+                      cursor: "pointer",
+                      opacity: isFiltered ? 1 : 0.3,
+                      background: isZoomed
+                        ? "#fff8e0"
+                        : hovered === d.unitid
+                        ? PALETTE.cream
+                        : "transparent",
                     }}
                   >
-                    {String(i + 1).padStart(3, "0")}
-                  </div>
-                  <div>
-                    <div
-                      style={{
-                        fontSize: 13,
-                        fontWeight: 600,
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {d.name}
-                    </div>
                     <div
                       style={{
                         fontFamily: "'DM Mono', monospace",
-                        fontSize: 9,
+                        fontSize: 11,
                         color: PALETTE.faint,
-                        marginTop: 2,
-                        letterSpacing: "0.05em",
                       }}
                     >
-                      {d.cityState}
+                      {String(i + 1).padStart(3, "0")}
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.2 }}>
+                        {d.name}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "'DM Mono', monospace",
+                          fontSize: 9,
+                          color: PALETTE.faint,
+                          marginTop: 2,
+                          letterSpacing: "0.05em",
+                        }}
+                      >
+                        {d.cityState}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "'Playfair Display', serif",
+                        fontWeight: 900,
+                        fontSize: 18,
+                        color: i < 10 ? PALETTE.maroon : PALETTE.ink,
+                      }}
+                    >
+                      {scaleMode === "count" ? d.count : d.perCapita.toFixed(2)}
                     </div>
                   </div>
-                  <div
-                    style={{
-                      fontFamily: "'Playfair Display', serif",
-                      fontWeight: 900,
-                      fontSize: 18,
-                      color: i < 10 ? PALETTE.maroon : PALETTE.ink,
-                    }}
-                  >
-                    {scaleMode === "count" ? d.count : d.perCapita.toFixed(2)}
-                  </div>
-                </div>
-              );
-            })}
+                );
+              });
+            })()}
           </div>
         </div>
 

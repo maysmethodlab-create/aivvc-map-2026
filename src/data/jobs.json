@@ -1,0 +1,141 @@
+{
+  "generatedAt": "2026-05-06T00:00:00.000Z",
+  "notes": "Generic JTBD patterns synthesized across 70+ anonymized student venture submissions. Each card represents a job pattern shared by at least five teams in the dataset; no card maps to a single submission.",
+  "cards": [
+    {
+      "id": "jtbd_01",
+      "theme": "Healthcare",
+      "persona": "front-line clinician in a busy outpatient practice",
+      "situation": "the next patient is already in the room and the chart is half-finished",
+      "want": "a clean visit summary, screener results, and prior history surfaced in front of me without me typing it",
+      "outcome": "spend the visit looking at the patient instead of catching up on documentation later that night",
+      "cluster_size": 18
+    },
+    {
+      "id": "jtbd_02",
+      "theme": "Healthcare",
+      "persona": "small-practice owner running a clinic on thin margins",
+      "situation": "calls go unanswered, claims get denied, and shifts go unfilled while staff are stretched",
+      "want": "the routine intake, scheduling, follow-up, and billing fixes handled in the background so booked appointments actually happen",
+      "outcome": "stop leaking revenue at the front desk and keep the lights on without hiring people we cannot afford",
+      "cluster_size": 22
+    },
+    {
+      "id": "jtbd_03",
+      "theme": "Healthcare",
+      "persona": "patient living with a chronic or post-treatment condition",
+      "situation": "weeks pass between appointments and symptoms, side effects, and missed routines stack up",
+      "want": "someone keeping track of how I am actually doing day to day and nudging the right behavior before things slip",
+      "outcome": "stay on plan and avoid the next preventable hospital visit instead of only being seen when something breaks",
+      "cluster_size": 15
+    },
+    {
+      "id": "jtbd_04",
+      "theme": "Healthcare",
+      "persona": "family caregiver or care coordinator for an aging adult",
+      "situation": "an older relative is at home alone and small risks like a fall or a missed medication can become emergencies",
+      "want": "an unobtrusive set of eyes that flags concerning changes without putting cameras or wearables on my parent",
+      "outcome": "let them stay independent at home longer and respond fast when something is genuinely wrong",
+      "cluster_size": 9
+    },
+    {
+      "id": "jtbd_05",
+      "theme": "Industrial / Energy",
+      "persona": "operations or maintenance lead at a mid-size plant or warehouse",
+      "situation": "a critical asset is showing early warning signs but the team only finds out after a costly stoppage",
+      "want": "the unusual pattern noticed and explained early so the right repair gets scheduled before production halts",
+      "outcome": "turn unplanned downtime into routine maintenance and stop bleeding revenue on emergency fixes",
+      "cluster_size": 16
+    },
+    {
+      "id": "jtbd_06",
+      "theme": "Industrial / Energy",
+      "persona": "buyer or operator working through a fragmented physical supply chain",
+      "situation": "contracts, certifications, shipments, and quality records live in spreadsheets, emails, and phone calls",
+      "want": "one trustworthy view of where every lot, load, or batch is and whether it meets the spec a customer is paying for",
+      "outcome": "win premium contracts that demand provenance instead of getting cut for being unable to prove what we sold",
+      "cluster_size": 12
+    },
+    {
+      "id": "jtbd_07",
+      "theme": "Industrial / Energy",
+      "persona": "field worker making weather- or condition-driven decisions outdoors",
+      "situation": "a planting, irrigation, dispatch, or repair call has to be made today with limited time and limited data",
+      "want": "a clear recommendation in plain language that fits the conditions on my piece of ground right now",
+      "outcome": "stop wasting inputs and losing time to bad timing on calls that used to depend on pure guesswork",
+      "cluster_size": 8
+    },
+    {
+      "id": "jtbd_08",
+      "theme": "Productivity & Workflow",
+      "persona": "founder or operator at a small services business",
+      "situation": "interest is coming in through calls, forms, and DMs faster than the team can answer",
+      "want": "every inbound lead greeted, qualified, and booked the moment it arrives, in our voice and our rules",
+      "outcome": "stop losing customers to whoever responds first and turn existing demand into actual appointments",
+      "cluster_size": 14
+    },
+    {
+      "id": "jtbd_09",
+      "theme": "Productivity & Workflow",
+      "persona": "knowledge worker juggling many tools, meetings, and follow-ups",
+      "situation": "the day is full of conversations and decisions that vanish the moment they end",
+      "want": "what was said, decided, and promised captured and brought back to me at the right moment without typing it up",
+      "outcome": "follow through on commitments and reclaim the hours that disappear into note-taking and re-explaining context",
+      "cluster_size": 13
+    },
+    {
+      "id": "jtbd_10",
+      "theme": "Productivity & Workflow",
+      "persona": "operations or finance leader trying to govern a fast-growing AI footprint",
+      "situation": "teams are using many AI tools but no one can say what is working, what is wasted, or whether it is safe",
+      "want": "a clear picture of where AI is helping, where it is leaking budget, and where it is creating risk",
+      "outcome": "scale the things that pay off and shut down the things that do not, without flying blind",
+      "cluster_size": 9
+    },
+    {
+      "id": "jtbd_11",
+      "theme": "Education",
+      "persona": "college student trying to keep up across many tools and courses",
+      "situation": "deadlines, materials, and study sessions are scattered across portals, PDFs, and group chats",
+      "want": "one calm place that tells me what is due, what to study next, and helps me actually learn it",
+      "outcome": "stop drowning in logistics and put the time into learning the material instead",
+      "cluster_size": 12
+    },
+    {
+      "id": "jtbd_12",
+      "theme": "Education",
+      "persona": "academic advisor or career coach overwhelmed by routine questions",
+      "situation": "inboxes fill with the same routine questions while at-risk students wait for real attention",
+      "want": "the routine questions answered accurately and on the record so my time goes to the students who need a human",
+      "outcome": "give every student a faster answer and still have hours left for the conversations only I can have",
+      "cluster_size": 8
+    },
+    {
+      "id": "jtbd_13",
+      "theme": "Personal & Lifestyle",
+      "persona": "person preparing for a high-stakes conversation",
+      "situation": "an interview, presentation, or difficult talk is coming up and no one will give honest practice feedback",
+      "want": "a private space to rehearse and get specific, kind feedback on how I came across",
+      "outcome": "walk into the room with real confidence instead of hoping it goes well",
+      "cluster_size": 8
+    },
+    {
+      "id": "jtbd_14",
+      "theme": "Personal & Lifestyle",
+      "persona": "consumer drowning in options and conflicting advice for everyday decisions",
+      "situation": "a routine choice such as what to buy, eat, or take has too many options and too much marketing noise",
+      "want": "a neutral recommendation that reflects who I am, not what someone is paid to push",
+      "outcome": "feel confident I picked the right thing for me and stop wasting time and money on bad guesses",
+      "cluster_size": 10
+    },
+    {
+      "id": "jtbd_15",
+      "theme": "Public Sector / Civic",
+      "persona": "resident or front-line public servant in an under-resourced setting",
+      "situation": "a moment of need shows up faster than the small team or hotline can respond to it",
+      "want": "the right rule, route, or report routed to whoever needs it now, even with a basic phone or no expertise",
+      "outcome": "make a public service that was theoretical actually reach the people it was built for",
+      "cluster_size": 7
+    }
+  ]
+}
