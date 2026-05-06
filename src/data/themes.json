@@ -1,0 +1,682 @@
+{
+  "generatedAt": "2026-05-06T15:21:51.562Z",
+  "classifiedTotal": 438,
+  "coverage": {
+    "classified": 438,
+    "readableClassified": 434,
+    "unreadable": 4
+  },
+  "themeTotals": {
+    "Healthcare": 95,
+    "Industrial / Energy": 87,
+    "Productivity & Workflow": 60,
+    "Education": 55,
+    "Personal & Lifestyle": 49,
+    "Media / Creative": 27,
+    "Public Sector / Civic": 25,
+    "Finance": 22,
+    "Frontier / Deep Tech": 10,
+    "Other": 4,
+    "Unreadable": 4
+  },
+  "secondaryTagTotals": {
+    "llm-app": 300,
+    "decision-support": 191,
+    "data-analytics": 121,
+    "workflow-automation": 94,
+    "computer-vision": 92,
+    "ai-agents": 88,
+    "voice-ai": 48,
+    "marketplace": 28,
+    "search-retrieval": 21,
+    "robotics": 18,
+    "developer-tools": 14,
+    "biotech": 13,
+    "image-gen": 6,
+    "video-gen": 2
+  },
+  "stageTotals": {
+    "idea": 144,
+    "prototype": 143,
+    "mvp": 91,
+    "traction": 60,
+    "unknown": 0
+  },
+  "targetTotals": {
+    "consumer": 138,
+    "smb": 97,
+    "enterprise": 147,
+    "government": 16,
+    "research": 12,
+    "mixed": 28,
+    "unknown": 0
+  },
+  "themeByRegion": {
+    "West": {
+      "Finance": 5,
+      "Personal & Lifestyle": 5,
+      "Healthcare": 14,
+      "Education": 10,
+      "Productivity & Workflow": 6,
+      "Industrial / Energy": 11,
+      "Public Sector / Civic": 3,
+      "Frontier / Deep Tech": 3,
+      "Media / Creative": 4,
+      "Unreadable": 1
+    },
+    "Northeast": {
+      "Healthcare": 12,
+      "Productivity & Workflow": 7,
+      "Finance": 5,
+      "Personal & Lifestyle": 6,
+      "Industrial / Energy": 12,
+      "Education": 7,
+      "Media / Creative": 4,
+      "Public Sector / Civic": 5,
+      "Frontier / Deep Tech": 2
+    },
+    "South": {
+      "Productivity & Workflow": 40,
+      "Education": 33,
+      "Healthcare": 62,
+      "Finance": 10,
+      "Industrial / Energy": 45,
+      "Personal & Lifestyle": 34,
+      "Unreadable": 3,
+      "Public Sector / Civic": 14,
+      "Media / Creative": 12,
+      "Frontier / Deep Tech": 3,
+      "Other": 3
+    },
+    "Midwest": {
+      "Industrial / Energy": 15,
+      "Frontier / Deep Tech": 2,
+      "Education": 5,
+      "Productivity & Workflow": 6,
+      "Healthcare": 5,
+      "Finance": 2,
+      "Media / Creative": 6,
+      "Personal & Lifestyle": 3,
+      "Other": 1
+    }
+  },
+  "themeByUnitid": {
+    "104151": {
+      "Industrial / Energy": 3,
+      "Education": 4
+    },
+    "110617": {
+      "Healthcare": 3
+    },
+    "129020": {
+      "Healthcare": 4
+    },
+    "135726": {
+      "Personal & Lifestyle": 3
+    },
+    "147767": {
+      "Industrial / Energy": 4
+    },
+    "227757": {
+      "Healthcare": 4
+    },
+    "228723": {
+      "Productivity & Workflow": 22,
+      "Healthcare": 26,
+      "Finance": 5,
+      "Industrial / Energy": 24,
+      "Education": 13,
+      "Personal & Lifestyle": 12,
+      "Public Sector / Civic": 5,
+      "Media / Creative": 5
+    },
+    "228778": {
+      "Healthcare": 3
+    },
+    "228787": {
+      "Healthcare": 4,
+      "Personal & Lifestyle": 3
+    },
+    "233921": {
+      "Productivity & Workflow": 3,
+      "Healthcare": 3
+    }
+  },
+  "themeByUnitidPresence": {
+    "100751": [
+      "Industrial / Energy",
+      "Healthcare"
+    ],
+    "104151": [
+      "Productivity & Workflow",
+      "Industrial / Energy",
+      "Finance",
+      "Education",
+      "Healthcare",
+      "Media / Creative",
+      "Personal & Lifestyle"
+    ],
+    "106397": [
+      "Industrial / Energy"
+    ],
+    "106412": [
+      "Healthcare"
+    ],
+    "110574": [
+      "Finance"
+    ],
+    "110608": [
+      "Finance",
+      "Healthcare",
+      "Personal & Lifestyle"
+    ],
+    "110617": [
+      "Healthcare"
+    ],
+    "110635": [
+      "Productivity & Workflow",
+      "Personal & Lifestyle",
+      "Industrial / Energy"
+    ],
+    "110644": [
+      "Finance",
+      "Healthcare"
+    ],
+    "110662": [
+      "Industrial / Energy",
+      "Productivity & Workflow"
+    ],
+    "110680": [
+      "Industrial / Energy"
+    ],
+    "110705": [
+      "Media / Creative"
+    ],
+    "110714": [
+      "Public Sector / Civic"
+    ],
+    "112394": [
+      "Education"
+    ],
+    "118693": [
+      "Industrial / Energy"
+    ],
+    "122409": [
+      "Media / Creative"
+    ],
+    "123961": [
+      "Healthcare",
+      "Education"
+    ],
+    "126614": [
+      "Personal & Lifestyle",
+      "Frontier / Deep Tech",
+      "Media / Creative",
+      "Industrial / Energy",
+      "Healthcare"
+    ],
+    "129020": [
+      "Finance",
+      "Personal & Lifestyle",
+      "Healthcare",
+      "Education",
+      "Industrial / Energy"
+    ],
+    "130794": [
+      "Productivity & Workflow",
+      "Industrial / Energy"
+    ],
+    "131469": [
+      "Personal & Lifestyle"
+    ],
+    "131496": [
+      "Industrial / Energy"
+    ],
+    "131520": [
+      "Productivity & Workflow"
+    ],
+    "133669": [
+      "Industrial / Energy"
+    ],
+    "133951": [
+      "Productivity & Workflow",
+      "Healthcare",
+      "Industrial / Energy"
+    ],
+    "134097": [
+      "Education"
+    ],
+    "134130": [
+      "Industrial / Energy"
+    ],
+    "135726": [
+      "Personal & Lifestyle",
+      "Media / Creative"
+    ],
+    "136516": [
+      "Healthcare"
+    ],
+    "137476": [
+      "Media / Creative"
+    ],
+    "139658": [
+      "Education",
+      "Personal & Lifestyle"
+    ],
+    "139755": [
+      "Productivity & Workflow",
+      "Education"
+    ],
+    "141060": [
+      "Personal & Lifestyle",
+      "Healthcare"
+    ],
+    "141574": [
+      "Industrial / Energy",
+      "Productivity & Workflow",
+      "Frontier / Deep Tech",
+      "Healthcare"
+    ],
+    "144050": [
+      "Finance",
+      "Education"
+    ],
+    "144740": [
+      "Productivity & Workflow"
+    ],
+    "145637": [
+      "Industrial / Energy"
+    ],
+    "147767": [
+      "Industrial / Energy",
+      "Productivity & Workflow",
+      "Media / Creative"
+    ],
+    "149231": [
+      "Industrial / Energy"
+    ],
+    "150163": [
+      "Industrial / Energy"
+    ],
+    "151351": [
+      "Healthcare"
+    ],
+    "152080": [
+      "Industrial / Energy",
+      "Media / Creative"
+    ],
+    "153001": [
+      "Education"
+    ],
+    "153603": [
+      "Other"
+    ],
+    "153658": [
+      "Productivity & Workflow",
+      "Media / Creative"
+    ],
+    "154004": [
+      "Education"
+    ],
+    "155681": [
+      "Media / Creative"
+    ],
+    "157289": [
+      "Media / Creative"
+    ],
+    "157377": [
+      "Public Sector / Civic"
+    ],
+    "159009": [
+      "Industrial / Energy",
+      "Productivity & Workflow",
+      "Personal & Lifestyle",
+      "Healthcare",
+      "Education"
+    ],
+    "159391": [
+      "Productivity & Workflow",
+      "Media / Creative"
+    ],
+    "160755": [
+      "Healthcare"
+    ],
+    "160904": [
+      "Education"
+    ],
+    "162928": [
+      "Healthcare",
+      "Education"
+    ],
+    "163046": [
+      "Finance"
+    ],
+    "163204": [
+      "Industrial / Energy"
+    ],
+    "163338": [
+      "Public Sector / Civic"
+    ],
+    "163453": [
+      "Finance"
+    ],
+    "163657": [
+      "Productivity & Workflow"
+    ],
+    "164076": [
+      "Media / Creative",
+      "Industrial / Energy"
+    ],
+    "164580": [
+      "Personal & Lifestyle"
+    ],
+    "164924": [
+      "Personal & Lifestyle",
+      "Productivity & Workflow",
+      "Public Sector / Civic"
+    ],
+    "166027": [
+      "Productivity & Workflow",
+      "Healthcare",
+      "Public Sector / Civic"
+    ],
+    "170976": [
+      "Healthcare"
+    ],
+    "171100": [
+      "Healthcare",
+      "Media / Creative"
+    ],
+    "175856": [
+      "Public Sector / Civic"
+    ],
+    "178402": [
+      "Industrial / Energy"
+    ],
+    "179867": [
+      "Education",
+      "Personal & Lifestyle",
+      "Industrial / Energy",
+      "Finance"
+    ],
+    "181464": [
+      "Education",
+      "Media / Creative",
+      "Healthcare"
+    ],
+    "182670": [
+      "Finance"
+    ],
+    "183044": [
+      "Education",
+      "Industrial / Energy"
+    ],
+    "185828": [
+      "Industrial / Energy",
+      "Healthcare",
+      "Frontier / Deep Tech",
+      "Personal & Lifestyle",
+      "Education",
+      "Media / Creative"
+    ],
+    "186131": [
+      "Public Sector / Civic"
+    ],
+    "186867": [
+      "Industrial / Energy",
+      "Productivity & Workflow"
+    ],
+    "188030": [
+      "Industrial / Energy"
+    ],
+    "190415": [
+      "Healthcare",
+      "Media / Creative",
+      "Personal & Lifestyle",
+      "Productivity & Workflow"
+    ],
+    "190521": [
+      "Public Sector / Civic"
+    ],
+    "193900": [
+      "Media / Creative",
+      "Public Sector / Civic"
+    ],
+    "196088": [
+      "Healthcare",
+      "Productivity & Workflow",
+      "Industrial / Energy",
+      "Media / Creative"
+    ],
+    "198419": [
+      "Education"
+    ],
+    "198695": [
+      "Healthcare"
+    ],
+    "199120": [
+      "Unreadable"
+    ],
+    "199218": [
+      "Personal & Lifestyle"
+    ],
+    "201885": [
+      "Frontier / Deep Tech",
+      "Industrial / Energy"
+    ],
+    "202523": [
+      "Industrial / Energy"
+    ],
+    "207582": [
+      "Public Sector / Civic",
+      "Industrial / Energy",
+      "Personal & Lifestyle"
+    ],
+    "207971": [
+      "Healthcare"
+    ],
+    "212054": [
+      "Healthcare",
+      "Finance",
+      "Frontier / Deep Tech"
+    ],
+    "214777": [
+      "Productivity & Workflow",
+      "Industrial / Energy",
+      "Education"
+    ],
+    "215062": [
+      "Finance",
+      "Industrial / Energy"
+    ],
+    "215655": [
+      "Education"
+    ],
+    "215770": [
+      "Education"
+    ],
+    "217484": [
+      "Industrial / Energy"
+    ],
+    "217882": [
+      "Frontier / Deep Tech",
+      "Healthcare"
+    ],
+    "218520": [
+      "Personal & Lifestyle",
+      "Industrial / Energy"
+    ],
+    "218663": [
+      "Productivity & Workflow"
+    ],
+    "218733": [
+      "Finance"
+    ],
+    "219082": [
+      "Personal & Lifestyle"
+    ],
+    "219709": [
+      "Education"
+    ],
+    "220978": [
+      "Education",
+      "Healthcare",
+      "Personal & Lifestyle"
+    ],
+    "221661": [
+      "Healthcare"
+    ],
+    "221999": [
+      "Media / Creative",
+      "Education",
+      "Other",
+      "Personal & Lifestyle"
+    ],
+    "223223": [
+      "Education"
+    ],
+    "224147": [
+      "Healthcare",
+      "Industrial / Energy"
+    ],
+    "225511": [
+      "Healthcare"
+    ],
+    "226091": [
+      "Industrial / Energy"
+    ],
+    "226833": [
+      "Personal & Lifestyle",
+      "Finance",
+      "Healthcare"
+    ],
+    "227216": [
+      "Productivity & Workflow"
+    ],
+    "227368": [
+      "Education"
+    ],
+    "227757": [
+      "Healthcare",
+      "Productivity & Workflow",
+      "Personal & Lifestyle",
+      "Unreadable"
+    ],
+    "228246": [
+      "Education",
+      "Productivity & Workflow",
+      "Public Sector / Civic",
+      "Personal & Lifestyle",
+      "Industrial / Energy",
+      "Healthcare",
+      "Media / Creative"
+    ],
+    "228459": [
+      "Education",
+      "Public Sector / Civic",
+      "Healthcare"
+    ],
+    "228723": [
+      "Productivity & Workflow",
+      "Healthcare",
+      "Finance",
+      "Industrial / Energy",
+      "Education",
+      "Personal & Lifestyle",
+      "Public Sector / Civic",
+      "Frontier / Deep Tech",
+      "Unreadable",
+      "Media / Creative",
+      "Other"
+    ],
+    "228769": [
+      "Industrial / Energy"
+    ],
+    "228778": [
+      "Education",
+      "Industrial / Energy",
+      "Healthcare"
+    ],
+    "228787": [
+      "Healthcare",
+      "Personal & Lifestyle",
+      "Industrial / Energy"
+    ],
+    "228802": [
+      "Education",
+      "Productivity & Workflow"
+    ],
+    "228875": [
+      "Productivity & Workflow",
+      "Education"
+    ],
+    "229027": [
+      "Public Sector / Civic"
+    ],
+    "229063": [
+      "Frontier / Deep Tech"
+    ],
+    "230038": [
+      "Public Sector / Civic",
+      "Healthcare"
+    ],
+    "230597": [
+      "Education"
+    ],
+    "232186": [
+      "Healthcare",
+      "Productivity & Workflow"
+    ],
+    "232265": [
+      "Personal & Lifestyle",
+      "Productivity & Workflow",
+      "Industrial / Energy"
+    ],
+    "232414": [
+      "Personal & Lifestyle"
+    ],
+    "233921": [
+      "Productivity & Workflow",
+      "Finance",
+      "Healthcare",
+      "Public Sector / Civic"
+    ],
+    "235343": [
+      "Personal & Lifestyle"
+    ],
+    "236948": [
+      "Education"
+    ],
+    "237011": [
+      "Finance"
+    ],
+    "237792": [
+      "Education"
+    ],
+    "240444": [
+      "Productivity & Workflow"
+    ],
+    "243744": [
+      "Healthcare"
+    ],
+    "243780": [
+      "Industrial / Energy",
+      "Healthcare",
+      "Productivity & Workflow"
+    ],
+    "247834": [
+      "Industrial / Energy"
+    ],
+    "399911": [
+      "Unreadable"
+    ],
+    "434061": [
+      "Personal & Lifestyle"
+    ],
+    "440031": [
+      "Healthcare",
+      "Education",
+      "Frontier / Deep Tech"
+    ]
+  }
+}
