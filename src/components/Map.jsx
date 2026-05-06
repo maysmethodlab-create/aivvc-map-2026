@@ -163,6 +163,7 @@ export default function Map() {
   const [selectedTheme, setSelectedTheme] = useState(null);
 
   const themePresence = THEMES.themeByUnitidPresence || {};
+  const themeByUnitidSafe = THEMES.themeByUnitid || {};
   const matchesFilter = (d) => {
     if (selectedRegion && d.region !== selectedRegion) return false;
     if (selectedTheme) {
@@ -172,6 +173,25 @@ export default function Map() {
     return true;
   };
   const hasFilter = !!(selectedRegion || selectedTheme);
+
+  // When a theme is selected: how many submissions did each school have in
+  // that theme? Returns null when count < 3 (privacy-suppressed) or 0.
+  const themeCountForSchool = (unitid) => {
+    if (!selectedTheme) return null;
+    const safe = themeByUnitidSafe[String(unitid)];
+    return safe?.[selectedTheme] ?? null;
+  };
+
+  // Theme-mode dot sizing: scale by theme count where known, else a small floor.
+  const themeDotR = (unitid) => {
+    const n = themeCountForSchool(unitid);
+    if (n === null) return 5; // small floor for 1-2 count (privacy-safe)
+    if (n >= 25) return 22;
+    if (n >= 10) return 14;
+    if (n >= 5) return 10;
+    if (n >= 3) return 7.5;
+    return 5;
+  };
 
   const W = 980,
     H = 580;
@@ -874,12 +894,13 @@ export default function Map() {
                 {/* Non-top-10 dots, smallest first */}
                 {filtered
                   .filter((d) => !top10Set.has(d.unitid))
+                  .filter((d) => !selectedTheme || matchesFilter(d))
                   .sort((a, b) => a.count - b.count)
                   .map((d, i) => {
                     const projected = projection([d.lng, d.lat]);
                     if (!projected) return null;
                     const [x, y] = projected;
-                    const r = dotR(d.count);
+                    const r = selectedTheme ? themeDotR(d.unitid) : dotR(d.count);
                     const isHov = hovered === d.unitid;
                     const isZoomed = zoomedSchool?.unitid === d.unitid;
                     const isMatch = matchesFilter(d);
@@ -945,6 +966,7 @@ export default function Map() {
                 {/* Top 10 logos */}
                 {filtered
                   .filter((d) => top10Set.has(d.unitid))
+                  .filter((d) => !selectedTheme || matchesFilter(d))
                   .map((d, i) => {
                     const projected = projection([d.lng, d.lat]);
                     if (!projected) return null;
@@ -953,7 +975,11 @@ export default function Map() {
                     const isZoomed = zoomedSchool?.unitid === d.unitid;
                     const isMatch = matchesFilter(d);
                     const dimmed = hasFilter && !isMatch;
-                    const r = d.unitid === 228723 ? 24 : 18;
+                    // When a theme is selected, top-10 logos resize by their
+                    // theme count (so a school that's strong in this theme
+                    // grows; a school weak in this theme shrinks).
+                    const themeR = selectedTheme ? themeDotR(d.unitid) + 6 : null;
+                    const r = themeR ?? (d.unitid === 228723 ? 24 : 18);
                     const fill = colorMode === "default" && d.color
                       ? d.color
                       : getDotColor(d);
@@ -1222,7 +1248,7 @@ export default function Map() {
                         letterSpacing: "0.05em",
                       }}
                     >
-                      {d.cityState} · {CARNEGIE_DISPLAY[carnegieKey(d)]}
+                      {d.cityState}
                     </div>
                   </div>
                   <div
@@ -1241,23 +1267,25 @@ export default function Map() {
           </div>
         </div>
 
-        {/* Carnegie breakdown */}
-        <div style={{ marginBottom: 32 }}>
-          <SectionHeading num="03" title="By Institution Type" />
-          <BarBreakdown
-            data={carnegieStats}
-            total={TOTAL_APPS}
-            colorMap={CARNEGIE_COLORS}
+        {/* Theme-specific Volume vs. Lean panel — only shown when a theme is selected */}
+        {selectedTheme && (
+          <ThemeFocusPanel
+            theme={selectedTheme}
+            allInstitutions={RAW}
+            themeByUnitidSafe={themeByUnitidSafe}
+            themePresence={themePresence}
+            onClear={() => setSelectedTheme(null)}
           />
-        </div>
+        )}
 
-        {/* Venture Themes */}
+        {/* Venture Themes (now includes the small Carnegie box inside "Where the building is happening") */}
         <ThemesSection
           selectedTheme={selectedTheme}
           setSelectedTheme={(t) => {
             setSelectedTheme(t);
             setSelectedRegion(null);
           }}
+          carnegieStats={carnegieStats}
         />
 
         {/* Footer */}
@@ -1543,7 +1571,7 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey }) {
   );
 }
 
-function ThemesSection({ selectedTheme, setSelectedTheme }) {
+function ThemesSection({ selectedTheme, setSelectedTheme, carnegieStats }) {
   const totals = THEMES.themeTotals;
   const classifiedTotal = THEMES.classifiedTotal;
   const readableTotal = (THEMES.coverage?.readableClassified) || classifiedTotal;
@@ -1568,16 +1596,16 @@ function ThemesSection({ selectedTheme, setSelectedTheme }) {
 
   return (
     <>
-      {/* Section 04: Where the building is happening */}
+      {/* Section 03: Where the building is happening */}
       <div style={{ marginBottom: 14 }}>
-        <SectionHeading num="04" title="Where the building is happening" />
+        <SectionHeading num="03" title="Where the building is happening" />
       </div>
       <div
         style={{
           marginBottom: 32,
           display: "grid",
-          gridTemplateColumns: "1.2fr 1fr",
-          gap: 24,
+          gridTemplateColumns: "1.4fr 1fr 0.9fr",
+          gap: 20,
         }}
       >
         <div>
@@ -1686,11 +1714,72 @@ function ThemesSection({ selectedTheme, setSelectedTheme }) {
             Themes inferred from {readableTotal} submitted snapshots ({Math.round((readableTotal / TOTAL_APPS_DISPLAY) * 100)}% coverage).
           </div>
         </div>
+
+        <div>
+          <div
+            style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: PALETTE.maroon,
+              marginBottom: 8,
+            }}
+          >
+            Institution type
+          </div>
+          <div
+            style={{
+              background: PALETTE.paper,
+              border: `1px solid ${PALETTE.ink}`,
+              padding: 14,
+            }}
+          >
+            {(carnegieStats || []).map((d) => {
+              const pct = (d.apps / TOTAL_APPS) * 100;
+              const max = Math.max(...(carnegieStats || []).map((x) => x.apps), 1);
+              const w = (d.apps / max) * 100;
+              return (
+                <div key={d.key} style={{ marginBottom: 8 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "baseline",
+                      fontSize: 12,
+                      marginBottom: 2,
+                    }}
+                  >
+                    <span style={{ fontWeight: 600 }}>{d.label}</span>
+                    <span
+                      style={{
+                        fontFamily: "'DM Mono', monospace",
+                        fontSize: 10,
+                        color: "#666",
+                      }}
+                    >
+                      {d.apps} · {pct.toFixed(0)}%
+                    </span>
+                  </div>
+                  <div style={{ height: 5, background: PALETTE.paleRule }}>
+                    <div
+                      style={{
+                        width: `${w}%`,
+                        height: "100%",
+                        background: CARNEGIE_COLORS[d.key] || PALETTE.maroon,
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      {/* Section 05: Who's Building */}
+      {/* Section 04: Who's Building */}
       <div style={{ marginBottom: 14 }}>
-        <SectionHeading num="05" title="Who's building" />
+        <SectionHeading num="04" title="Who's building" />
       </div>
       <div
         style={{
@@ -1821,6 +1910,266 @@ function ThemesSection({ selectedTheme, setSelectedTheme }) {
         </div>
       </div>
     </>
+  );
+}
+
+function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePresence, onClear }) {
+  const themeColor = THEME_COLORS[theme] || PALETTE.maroon;
+  const themeTotal = THEMES.themeTotals[theme] || 0;
+  const classifiedTotal = THEMES.coverage?.readableClassified || THEMES.classifiedTotal || 1;
+  const globalShare = themeTotal / classifiedTotal;
+
+  const insts = allInstitutions.filter((d) => d.unitid > 0);
+  const byUnitid = {};
+  insts.forEach((d) => (byUnitid[String(d.unitid)] = d));
+
+  // Volume: schools by absolute count of this theme — only schools with >=3
+  // can be displayed by name (privacy rule). Others are aggregated.
+  const namedVolume = [];
+  let smallSchoolApps = 0;
+  let smallSchoolCount = 0;
+  for (const [uidStr, themes] of Object.entries(themePresence)) {
+    if (!themes.includes(theme)) continue;
+    const uid = uidStr;
+    const inst = byUnitid[uid];
+    if (!inst) continue;
+    const safeCount = themeByUnitidSafe[uid]?.[theme];
+    if (safeCount !== undefined) {
+      namedVolume.push({ inst, count: safeCount });
+    } else {
+      smallSchoolCount++;
+      // We know presence but not exact count; treat as 1 or 2 (avg ~1.5).
+      smallSchoolApps += 1;
+    }
+  }
+  namedVolume.sort((a, b) => b.count - a.count);
+
+  // Lean: same schools, but ranked by share of their total submissions in this theme.
+  const namedLean = namedVolume
+    .map(({ inst, count }) => ({
+      inst,
+      count,
+      share: count / Math.max(inst.count, 1),
+    }))
+    .filter((x) => x.share > globalShare)
+    .sort((a, b) => b.share - a.share);
+
+  return (
+    <div style={{ marginBottom: 32 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          gap: 14,
+          marginBottom: 14,
+        }}
+      >
+        <div
+          style={{
+            fontFamily: "'DM Mono', monospace",
+            fontSize: 11,
+            letterSpacing: "0.2em",
+            color: themeColor,
+            fontWeight: 600,
+          }}
+        >
+          ZOOM IN
+        </div>
+        <h2
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 22,
+            fontWeight: 700,
+            margin: 0,
+            fontStyle: "italic",
+          }}
+        >
+          {theme}
+        </h2>
+        <div style={{ flex: 1, height: 1, background: PALETTE.ink, marginLeft: 8 }} />
+        <button
+          onClick={onClear}
+          style={{
+            padding: "5px 10px",
+            background: PALETTE.ink,
+            color: PALETTE.cream,
+            border: `1px solid ${PALETTE.ink}`,
+            fontFamily: "'DM Mono', monospace",
+            fontSize: 10,
+            cursor: "pointer",
+            letterSpacing: "0.1em",
+          }}
+        >
+          Clear ✕
+        </button>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: themeColor,
+              marginBottom: 8,
+            }}
+          >
+            Volume — most {theme.split(" ")[0].toLowerCase()} ventures
+          </div>
+          <div
+            style={{
+              background: PALETTE.paper,
+              border: `1px solid ${PALETTE.ink}`,
+              padding: 18,
+            }}
+          >
+            {namedVolume.slice(0, 8).map(({ inst, count }) => {
+              const max = namedVolume[0]?.count || 1;
+              const w = (count / max) * 100;
+              return (
+                <div key={inst.unitid} style={{ marginBottom: 10 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "baseline",
+                      fontSize: 13,
+                      marginBottom: 3,
+                      gap: 8,
+                    }}
+                  >
+                    <span style={{ fontWeight: 600 }}>{inst.name}</span>
+                    <span
+                      style={{
+                        fontFamily: "'DM Mono', monospace",
+                        fontSize: 11,
+                        color: "#666",
+                      }}
+                    >
+                      {count} of {inst.count}
+                    </span>
+                  </div>
+                  <div style={{ height: 8, background: PALETTE.paleRule }}>
+                    <div style={{ width: `${w}%`, height: "100%", background: themeColor }} />
+                  </div>
+                </div>
+              );
+            })}
+            {smallSchoolCount > 0 && (
+              <div
+                style={{
+                  marginTop: 12,
+                  fontSize: 12,
+                  color: PALETTE.muted,
+                  fontStyle: "italic",
+                }}
+              >
+                + {smallSchoolCount} more institutions with 1–2 {theme} submissions each
+                (names not shown to protect small-team identity).
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <div
+            style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: themeColor,
+              marginBottom: 8,
+            }}
+          >
+            Lean — {theme.split(" ")[0].toLowerCase()} as % of school's mix
+          </div>
+          <div
+            style={{
+              background: PALETTE.paper,
+              border: `1px solid ${PALETTE.ink}`,
+              padding: 18,
+            }}
+          >
+            {namedLean.length === 0 && (
+              <div style={{ fontSize: 13, color: PALETTE.muted, fontStyle: "italic" }}>
+                No school is over-indexed on {theme} above the global average of{" "}
+                {Math.round(globalShare * 100)}%.
+              </div>
+            )}
+            {namedLean.slice(0, 8).map(({ inst, count, share }) => {
+              const w = Math.min(share, 1) * 100;
+              return (
+                <div key={inst.unitid} style={{ marginBottom: 10 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "baseline",
+                      fontSize: 13,
+                      marginBottom: 3,
+                      gap: 8,
+                    }}
+                  >
+                    <span style={{ fontWeight: 600 }}>{inst.name}</span>
+                    <span
+                      style={{
+                        fontFamily: "'DM Mono', monospace",
+                        fontSize: 11,
+                        color: "#666",
+                      }}
+                    >
+                      {Math.round(share * 100)}% ({count}/{inst.count})
+                    </span>
+                  </div>
+                  <div style={{ height: 8, background: PALETTE.paleRule, position: "relative" }}>
+                    <div
+                      style={{
+                        width: `${w}%`,
+                        height: "100%",
+                        background: themeColor,
+                      }}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: -2,
+                        left: `${globalShare * 100}%`,
+                        height: 12,
+                        width: 1,
+                        background: PALETTE.ink,
+                      }}
+                      title={`Global avg: ${Math.round(globalShare * 100)}%`}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            {namedLean.length > 0 && (
+              <div
+                style={{
+                  marginTop: 12,
+                  fontSize: 12,
+                  color: PALETTE.muted,
+                  fontStyle: "italic",
+                }}
+              >
+                Vertical line on each bar = global average for {theme} ({Math.round(globalShare * 100)}%).
+                Schools shown have proportionally more of their portfolio in this theme than the field as a whole.
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
