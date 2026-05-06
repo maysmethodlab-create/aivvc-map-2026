@@ -85,15 +85,6 @@
     },
     {
       "id": "jtbd_10",
-      "theme": "Productivity & Workflow",
-      "persona": "operations or finance leader trying to govern a fast-growing AI footprint",
-      "situation": "teams are using many AI tools but no one can say what is working, what is wasted, or whether it is safe",
-      "want": "a clear picture of where AI is helping, where it is leaking budget, and where it is creating risk",
-      "outcome": "scale the things that pay off and shut down the things that do not, without flying blind",
-      "cluster_size": 9
-    },
-    {
-      "id": "jtbd_11",
       "theme": "Education",
       "persona": "college student trying to keep up across many tools and courses",
       "situation": "deadlines, materials, and study sessions are scattered across portals, PDFs, and group chats",
@@ -102,7 +93,7 @@
       "cluster_size": 12
     },
     {
-      "id": "jtbd_12",
+      "id": "jtbd_11",
       "theme": "Education",
       "persona": "academic advisor or career coach overwhelmed by routine questions",
       "situation": "inboxes fill with the same routine questions while at-risk students wait for real attention",
@@ -111,7 +102,7 @@
       "cluster_size": 8
     },
     {
-      "id": "jtbd_13",
+      "id": "jtbd_12",
       "theme": "Personal & Lifestyle",
       "persona": "person preparing for a high-stakes conversation",
       "situation": "an interview, presentation, or difficult talk is coming up and no one will give honest practice feedback",
@@ -120,7 +111,7 @@
       "cluster_size": 8
     },
     {
-      "id": "jtbd_14",
+      "id": "jtbd_13",
       "theme": "Personal & Lifestyle",
       "persona": "consumer drowning in options and conflicting advice for everyday decisions",
       "situation": "a routine choice such as what to buy, eat, or take has too many options and too much marketing noise",
@@ -129,13 +120,22 @@
       "cluster_size": 10
     },
     {
-      "id": "jtbd_15",
+      "id": "jtbd_14",
       "theme": "Public Sector / Civic",
       "persona": "resident or front-line public servant in an under-resourced setting",
       "situation": "a moment of need shows up faster than the small team or hotline can respond to it",
       "want": "the right rule, route, or report routed to whoever needs it now, even with a basic phone or no expertise",
       "outcome": "make a public service that was theoretical actually reach the people it was built for",
       "cluster_size": 7
+    },
+    {
+      "id": "jtbd_15",
+      "theme": "Finance",
+      "persona": "small-business owner or everyday consumer dealing with rules-heavy financial paperwork",
+      "situation": "a denial, dispute, or compliance form is in the way of money owed or a benefit that should already apply",
+      "want": "the next correct step explained and handled in plain language without paying an enterprise specialist",
+      "outcome": "actually collect what is mine and move on instead of giving up because the process is hostile",
+      "cluster_size": 8
     }
   ]
 }

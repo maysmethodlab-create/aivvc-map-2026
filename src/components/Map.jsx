@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import * as d3 from "d3";
 import RAW_DATA from "../data/institutions.json";
 import THEMES from "../data/themes.json";
+import JOBS from "../data/jobs.json";
 
 const THEME_ORDER = [
   "Healthcare",
@@ -1897,9 +1898,12 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         </div>
       </div>
 
-      {/* Section 04: Who's Building */}
+      {/* Section 04: What students are getting done */}
+      <JobsSection />
+
+      {/* Section 05: Who's Building */}
       <div style={{ marginBottom: 14 }}>
-        <SectionHeading num="04" title="Who's building" />
+        <SectionHeading num="05" title="Who's building" />
       </div>
       <div
         style={{
@@ -2030,6 +2034,145 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         </div>
       </div>
     </>
+  );
+}
+
+function JobsSection() {
+  const cards = JOBS.cards || [];
+  const [activeId, setActiveId] = useState(null);
+
+  return (
+    <div style={{ marginBottom: 32 }}>
+      <SectionHeading num="04" title="What they're getting done" />
+      <div
+        style={{
+          fontSize: 14,
+          lineHeight: 1.5,
+          color: PALETTE.muted,
+          marginBottom: 18,
+          maxWidth: 760,
+        }}
+      >
+        Each card is one of the recurring{" "}
+        <em>jobs to be done</em> we saw across the submissions. Click a card to
+        see the full pattern — the persona, the situation, what they want, and
+        why it matters. Each card represents 5 or more ventures so no single
+        team is identifiable.
+      </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 14,
+        }}
+      >
+        {cards.map((c) => {
+          const isOpen = activeId === c.id;
+          const themeColor = THEME_COLORS[c.theme] || PALETTE.maroon;
+          return (
+            <div
+              key={c.id}
+              onClick={() => setActiveId(isOpen ? null : c.id)}
+              style={{
+                background: PALETTE.paper,
+                border: `1px solid ${PALETTE.ink}`,
+                borderTop: `4px solid ${themeColor}`,
+                padding: "14px 16px 16px 16px",
+                cursor: "pointer",
+                transition: "transform 0.15s ease, box-shadow 0.15s ease",
+                transform: isOpen ? "translateY(-2px)" : "none",
+                boxShadow: isOpen ? "0 6px 16px rgba(0,0,0,0.12)" : "none",
+                minHeight: 160,
+                display: "flex",
+                flexDirection: "column",
+                gap: 8,
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.background = PALETTE.cream)
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.background = PALETTE.paper)
+              }
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: 9,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                }}
+              >
+                <span style={{ color: themeColor, fontWeight: 600 }}>
+                  {c.theme}
+                </span>
+                <span style={{ color: PALETTE.faint }}>
+                  ~{c.cluster_size} ventures
+                </span>
+              </div>
+
+              <div
+                style={{
+                  fontFamily: "'Playfair Display', serif",
+                  fontSize: 17,
+                  fontWeight: 700,
+                  fontStyle: "italic",
+                  lineHeight: 1.25,
+                  color: PALETTE.ink,
+                }}
+              >
+                When I'm a {c.persona}…
+              </div>
+
+              {isOpen ? (
+                <>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      lineHeight: 1.45,
+                      color: PALETTE.muted,
+                    }}
+                  >
+                    …and {c.situation},
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      lineHeight: 1.45,
+                      color: PALETTE.ink,
+                    }}
+                  >
+                    <strong>I want</strong> {c.want},
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 13,
+                      lineHeight: 1.45,
+                      color: PALETTE.ink,
+                    }}
+                  >
+                    <strong>so I can</strong> {c.outcome}.
+                  </div>
+                </>
+              ) : (
+                <div
+                  style={{
+                    fontSize: 12,
+                    color: PALETTE.faint,
+                    fontFamily: "'DM Mono', monospace",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  Click to read the full job →
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
 
