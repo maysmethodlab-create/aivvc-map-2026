@@ -160,29 +160,53 @@ export default function Map() {
   const [topojson, setTopojson] = useState(null);
   const [zoomedSchool, setZoomedSchool] = useState(null);
   const [selectedRegion, setSelectedRegion] = useState(null);
-  const [selectedTheme, setSelectedTheme] = useState(null);
+  const [selectedThemes, setSelectedThemes] = useState(() => new Set());
 
   const themePresence = THEMES.themeByUnitidPresence || {};
   const themeByUnitidSafe = THEMES.themeByUnitid || {};
+
+  const toggleTheme = (theme) => {
+    setSelectedThemes((prev) => {
+      const next = new Set(prev);
+      if (next.has(theme)) next.delete(theme);
+      else next.add(theme);
+      return next;
+    });
+    setSelectedRegion(null);
+  };
+  const clearAllThemes = () => setSelectedThemes(new Set());
+  const hasThemeFilter = selectedThemes.size > 0;
+  const onlyTheme = selectedThemes.size === 1 ? [...selectedThemes][0] : null;
+
   const matchesFilter = (d) => {
     if (selectedRegion && d.region !== selectedRegion) return false;
-    if (selectedTheme) {
-      const themes = themePresence[String(d.unitid)] || [];
-      if (!themes.includes(selectedTheme)) return false;
+    if (hasThemeFilter) {
+      const schoolThemes = themePresence[String(d.unitid)] || [];
+      // OR logic: include schools that match ANY selected theme.
+      const intersects = schoolThemes.some((t) => selectedThemes.has(t));
+      if (!intersects) return false;
     }
     return true;
   };
-  const hasFilter = !!(selectedRegion || selectedTheme);
+  const hasFilter = !!selectedRegion || hasThemeFilter;
 
-  // When a theme is selected: how many submissions did each school have in
-  // that theme? Returns null when count < 3 (privacy-suppressed) or 0.
+  // When themes are selected: total count across all selected themes for one school.
+  // Returns null if all selected themes are privacy-suppressed (count < 3) for this school.
   const themeCountForSchool = (unitid) => {
-    if (!selectedTheme) return null;
-    const safe = themeByUnitidSafe[String(unitid)];
-    return safe?.[selectedTheme] ?? null;
+    if (!hasThemeFilter) return null;
+    const safe = themeByUnitidSafe[String(unitid)] || {};
+    let total = 0;
+    let anyKnown = false;
+    for (const t of selectedThemes) {
+      if (safe[t] !== undefined) {
+        total += safe[t];
+        anyKnown = true;
+      }
+    }
+    return anyKnown ? total : null;
   };
 
-  // Theme-mode dot sizing: scale by theme count where known, else a small floor.
+  // Theme-mode dot sizing.
   const themeDotR = (unitid) => {
     const n = themeCountForSchool(unitid);
     if (n === null) return 5; // small floor for 1-2 count (privacy-safe)
@@ -192,6 +216,9 @@ export default function Map() {
     if (n >= 3) return 7.5;
     return 5;
   };
+
+  // For backwards-compat with existing render code that referenced `selectedTheme`.
+  const selectedTheme = onlyTheme;
 
   const W = 980,
     H = 580;
@@ -618,7 +645,7 @@ export default function Map() {
                 tabIndex={0}
                 onClick={() => {
                   setSelectedRegion(active ? null : r.region);
-                  setSelectedTheme(null);
+                  clearAllThemes();
                 }}
                 style={{
                   background: active ? PALETTE.maroon : PALETTE.paper,
@@ -720,20 +747,7 @@ export default function Map() {
                 flexWrap: "wrap",
               }}
             >
-              <span style={{ color: "#666" }}>Color by:</span>
-              {[
-                { id: "default", label: "Default" },
-                { id: "carnegie", label: "Carnegie" },
-              ].map((opt) => (
-                <ToggleButton
-                  key={opt.id}
-                  active={colorMode === opt.id}
-                  onClick={() => setColorMode(opt.id)}
-                >
-                  {opt.label}
-                </ToggleButton>
-              ))}
-              <span style={{ marginLeft: 16, color: "#666" }}>Rank by:</span>
+              <span style={{ color: "#666" }}>Rank by:</span>
               {[
                 { id: "count", label: "Total apps" },
                 { id: "percapita", label: "Per 1k students" },
@@ -764,15 +778,12 @@ export default function Map() {
             >
               <span style={{ color: "#666", marginRight: 4 }}>Filter by theme:</span>
               {THEME_ORDER.filter((k) => (THEMES.themeTotals[k] || 0) > 0).map((k) => {
-                const active = selectedTheme === k;
+                const active = selectedThemes.has(k);
                 const n = THEMES.themeTotals[k] || 0;
                 return (
                   <button
                     key={k}
-                    onClick={() => {
-                      setSelectedTheme(active ? null : k);
-                      setSelectedRegion(null);
-                    }}
+                    onClick={() => toggleTheme(k)}
                     style={{
                       padding: "5px 9px",
                       background: active ? THEME_COLORS[k] : "transparent",
@@ -796,10 +807,10 @@ export default function Map() {
                   </button>
                 );
               })}
-              {(selectedTheme || selectedRegion) && (
+              {(hasThemeFilter || selectedRegion) && (
                 <button
                   onClick={() => {
-                    setSelectedTheme(null);
+                    clearAllThemes();
                     setSelectedRegion(null);
                   }}
                   style={{
@@ -819,7 +830,7 @@ export default function Map() {
               )}
             </div>
 
-            {(selectedTheme || selectedRegion) && (
+            {(hasThemeFilter || selectedRegion) && (
               <div
                 style={{
                   fontFamily: "'Source Serif Pro', serif",
@@ -831,18 +842,31 @@ export default function Map() {
                   color: PALETTE.ink,
                 }}
               >
-                {selectedTheme ? (
-                  <>
-                    Showing schools that submitted{" "}
-                    <strong style={{ color: THEME_COLORS[selectedTheme] }}>
-                      {selectedTheme}
-                    </strong>{" "}
-                    ventures —{" "}
-                    <strong>
-                      {THEMES.themeTotals[selectedTheme] || 0}
-                    </strong>{" "}
-                    submissions across the map.
-                  </>
+                {hasThemeFilter ? (
+                  (() => {
+                    const themesArr = [...selectedThemes];
+                    const totalSubs = themesArr.reduce(
+                      (s, t) => s + (THEMES.themeTotals[t] || 0),
+                      0
+                    );
+                    return (
+                      <>
+                        Showing schools with{" "}
+                        {themesArr.map((t, i) => (
+                          <span key={t}>
+                            <strong style={{ color: THEME_COLORS[t] }}>{t}</strong>
+                            {i < themesArr.length - 2
+                              ? ", "
+                              : i === themesArr.length - 2
+                              ? " or "
+                              : ""}
+                          </span>
+                        ))}{" "}
+                        ventures — <strong>{totalSubs}</strong> submission
+                        {totalSubs !== 1 ? "s" : ""} across the map.
+                      </>
+                    );
+                  })()
                 ) : (
                   <>
                     Showing the <strong>{selectedRegion}</strong> region only.
@@ -1138,29 +1162,6 @@ export default function Map() {
                     <span>{l.label}</span>
                   </div>
                 ))}
-                {colorMode === "carnegie" && (
-                  <>
-                    <span style={{ marginLeft: 12, fontWeight: 600 }}>Color:</span>
-                    {Object.entries(CARNEGIE_COLORS)
-                      .filter(([k]) => k !== "Other" && k !== "Tribal")
-                      .map(([k, v]) => (
-                        <div
-                          key={k}
-                          style={{ display: "flex", alignItems: "center", gap: 4 }}
-                        >
-                          <div
-                            style={{
-                              width: 10,
-                              height: 10,
-                              borderRadius: "50%",
-                              background: v,
-                            }}
-                          />
-                          <span>{k}</span>
-                        </div>
-                      ))}
-                  </>
-                )}
               </div>
             </div>
           </div>
@@ -1267,24 +1268,21 @@ export default function Map() {
           </div>
         </div>
 
-        {/* Theme-specific Volume vs. Lean panel — only shown when a theme is selected */}
-        {selectedTheme && (
+        {/* Theme-specific Volume vs. Lean panel — only shown when EXACTLY ONE theme is selected */}
+        {onlyTheme && (
           <ThemeFocusPanel
-            theme={selectedTheme}
+            theme={onlyTheme}
             allInstitutions={RAW}
             themeByUnitidSafe={themeByUnitidSafe}
             themePresence={themePresence}
-            onClear={() => setSelectedTheme(null)}
+            onClear={clearAllThemes}
           />
         )}
 
-        {/* Venture Themes (now includes the small Carnegie box inside "Where the building is happening") */}
+        {/* Venture Themes (with the small Carnegie box inside "Where the building is happening") */}
         <ThemesSection
-          selectedTheme={selectedTheme}
-          setSelectedTheme={(t) => {
-            setSelectedTheme(t);
-            setSelectedRegion(null);
-          }}
+          selectedThemes={selectedThemes}
+          toggleTheme={toggleTheme}
           carnegieStats={carnegieStats}
         />
 
@@ -1503,7 +1501,7 @@ function ParetoChart({ data }) {
   );
 }
 
-function BarBreakdown({ data, total, colorMap, onRowClick, activeKey }) {
+function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }) {
   const max = Math.max(...data.map((d) => d.apps));
   return (
     <div
@@ -1521,7 +1519,8 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey }) {
           d.schools !== undefined
             ? `${d.apps} apps · ${d.schools} schools · ${pct.toFixed(1)}%`
             : `${d.apps} ventures · ${pct.toFixed(1)}%`;
-        const isActive = onRowClick && activeKey === colorKey;
+        const isActiveRow =
+          onRowClick && (isActive ? isActive(colorKey) : activeKey === colorKey);
         return (
           <div
             key={colorKey}
@@ -1531,8 +1530,8 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey }) {
               padding: onRowClick ? "4px 6px" : 0,
               margin: onRowClick ? "0 -6px 6px -6px" : "0 0 10px 0",
               cursor: onRowClick ? "pointer" : "default",
-              background: isActive ? "rgba(80,0,0,0.08)" : "transparent",
-              border: isActive ? `1px solid ${PALETTE.maroon}` : "1px solid transparent",
+              background: isActiveRow ? "rgba(80,0,0,0.08)" : "transparent",
+              border: isActiveRow ? `1px solid ${PALETTE.maroon}` : "1px solid transparent",
             }}
           >
             <div
@@ -1571,7 +1570,7 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey }) {
   );
 }
 
-function ThemesSection({ selectedTheme, setSelectedTheme, carnegieStats }) {
+function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
   const totals = THEMES.themeTotals;
   const classifiedTotal = THEMES.classifiedTotal;
   const readableTotal = (THEMES.coverage?.readableClassified) || classifiedTotal;
@@ -1625,8 +1624,8 @@ function ThemesSection({ selectedTheme, setSelectedTheme, carnegieStats }) {
             data={themeRows}
             total={readableTotal}
             colorMap={THEME_COLORS}
-            onRowClick={(k) => setSelectedTheme(selectedTheme === k ? null : k)}
-            activeKey={selectedTheme}
+            onRowClick={(k) => toggleTheme(k)}
+            isActive={(k) => selectedThemes.has(k)}
           />
           <div
             style={{
