@@ -1725,7 +1725,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         style={{
           marginBottom: 32,
           display: "grid",
-          gridTemplateColumns: "1.4fr 1fr 0.9fr",
+          gridTemplateColumns: "1.2fr 1fr",
           gap: 20,
         }}
       >
@@ -1833,67 +1833,6 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
             }}
           >
             Themes inferred from {readableTotal} submitted snapshots ({Math.round((readableTotal / TOTAL_APPS_DISPLAY) * 100)}% coverage).
-          </div>
-        </div>
-
-        <div>
-          <div
-            style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: 10,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: PALETTE.maroon,
-              marginBottom: 8,
-            }}
-          >
-            Institution type
-          </div>
-          <div
-            style={{
-              background: PALETTE.paper,
-              border: `1px solid ${PALETTE.ink}`,
-              padding: 14,
-            }}
-          >
-            {(carnegieStats || []).map((d) => {
-              const pct = (d.apps / TOTAL_APPS) * 100;
-              const max = Math.max(...(carnegieStats || []).map((x) => x.apps), 1);
-              const w = (d.apps / max) * 100;
-              return (
-                <div key={d.key} style={{ marginBottom: 8 }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "baseline",
-                      fontSize: 12,
-                      marginBottom: 2,
-                    }}
-                  >
-                    <span style={{ fontWeight: 600 }}>{d.label}</span>
-                    <span
-                      style={{
-                        fontFamily: "'DM Mono', monospace",
-                        fontSize: 10,
-                        color: "#666",
-                      }}
-                    >
-                      {d.apps} · {pct.toFixed(0)}%
-                    </span>
-                  </div>
-                  <div style={{ height: 5, background: PALETTE.paleRule }}>
-                    <div
-                      style={{
-                        width: `${w}%`,
-                        height: "100%",
-                        background: CARNEGIE_COLORS[d.key] || PALETTE.maroon,
-                      }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </div>
       </div>
