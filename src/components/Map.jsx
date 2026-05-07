@@ -283,14 +283,12 @@ export default function Map() {
     if (search === "") return RAW;
     const q = search.toLowerCase().trim();
     if (!q) return RAW;
+    const tokens = q.split(/\s+/).filter(Boolean);
     return RAW.filter((d) => {
-      if (d.name.toLowerCase().includes(q)) return true;
-      if (d.cityState.toLowerCase().includes(q)) return true;
       const stateName = STATE_FULL_NAMES[d.state]?.toLowerCase() || "";
-      if (stateName.includes(q)) return true;
-      // 2-letter state code exact match: e.g. "ca" → state="CA"
-      if (q.length <= 2 && d.state?.toLowerCase() === q) return true;
-      return false;
+      const haystack = `${d.name.toLowerCase()} ${d.cityState.toLowerCase()} ${stateName} ${d.state?.toLowerCase() || ""}`;
+      // Every token in the query must appear somewhere in the haystack.
+      return tokens.every((t) => haystack.includes(t));
     });
   }, [search]);
 
@@ -451,18 +449,6 @@ export default function Map() {
           <div>
             <div
               style={{
-                fontFamily: "'DM Mono', monospace",
-                fontSize: 10,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: PALETTE.gold,
-                marginBottom: 4,
-              }}
-            >
-              Step 1
-            </div>
-            <div
-              style={{
                 fontFamily: "'Playfair Display', serif",
                 fontSize: 24,
                 fontWeight: 700,
@@ -478,8 +464,14 @@ export default function Map() {
               placeholder="Type a school, city, or state…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") {
+                  setSearch("");
+                  setZoomedSchool(null);
+                }
+              }}
               style={{
-                padding: "12px 16px",
+                padding: "12px 38px 12px 16px",
                 fontFamily: "'Source Serif Pro', serif",
                 fontSize: 15,
                 border: `1px solid ${PALETTE.cream}`,
@@ -490,6 +482,37 @@ export default function Map() {
                 boxSizing: "border-box",
               }}
             />
+            {search.length > 0 && (
+              <button
+                onClick={() => {
+                  setSearch("");
+                  setZoomedSchool(null);
+                }}
+                aria-label="Clear search"
+                style={{
+                  position: "absolute",
+                  right: 8,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  border: "none",
+                  background: PALETTE.ink,
+                  color: PALETTE.cream,
+                  fontSize: 14,
+                  lineHeight: "24px",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  padding: 0,
+                  fontFamily: "'DM Mono', monospace",
+                  zIndex: 11,
+                }}
+                title="Clear search (Esc)"
+              >
+                ×
+              </button>
+            )}
             {search.length >= 2 && filtered.length > 0 && filtered.length < RAW.length && (
               <div
                 style={{
