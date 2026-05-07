@@ -104,18 +104,68 @@ const TOTAL_INSTITUTIONS_DISPLAY = 160; // Levi's external number; deduped data 
 const TOTAL_APPS = RAW.reduce((s, x) => s + x.count, 0);
 const TOTAL_INSTITUTIONS = RAW.length;
 
+// Mays brand tokens. See BRAND.md in Method Lab project.
 const PALETTE = {
-  maroon: "#500000",
-  maroonDeep: "#3a0000",
-  ink: "#1a1a1a",
-  cream: "#f5f1e8",
-  paper: "#fffdf7",
-  rule: "#1a1a1a",
-  muted: "#3a3a3a",
-  faint: "#999",
-  gold: "#d4a017",
-  paleRule: "#e8e0cf",
+  maroon: "#500000",       // Aggie Maroon. Headings, primary buttons.
+  maroonDeep: "#3C0000",   // Link color, button border.
+  maroonMuted: "#732F2F",  // Eyebrows, dotted frame outline, muted accents.
+  ink: "#000000",          // Strong text, body copy when emphasis matters.
+  inkSecondary: "#3E3E3E", // Default body paragraph color.
+  inkMuted: "#5A5A5A",     // Captions, helper text. Was 'faint'.
+  bg: "#FFFFFF",           // Default background.
+  bgSubtle: "#EAEAEA",     // Footer / alternating section background.
+  line: "#D1D1D1",         // Default 1px border / divider.
+  // Legacy names preserved for code that still references them; mapped to
+  // new tokens so a brand-pure surface comes through.
+  cream: "#FFFFFF",
+  paper: "#FFFFFF",
+  rule: "#000000",
+  muted: "#3E3E3E",
+  faint: "#5A5A5A",
+  gold: "#500000",
+  paleRule: "#D1D1D1",
 };
+
+const FONT_DISPLAY = "'Oswald', Arial, sans-serif";
+const FONT_BODY = "'Work Sans', Arial, sans-serif";
+
+// Helper: pick "a" or "an" based on first letter of the persona (vowel sound approximation).
+function aOrAn(noun) {
+  if (!noun) return "a";
+  const first = noun.trim()[0]?.toLowerCase();
+  return ["a", "e", "i", "o", "u"].includes(first) ? "an" : "a";
+}
+
+// Helper: collapse spaces around slashes for inline display.
+function dispLabel(s) {
+  return typeof s === "string" ? s.replace(/\s*\/\s*/g, "/") : s;
+}
+
+// AP-style title case: capitalize all major words, lowercase short articles/prepositions/conjunctions
+// EXCEPT when first or last in the title.
+const TITLE_LOWERCASE = new Set([
+  "a", "an", "and", "as", "at", "but", "by", "en", "for", "if", "in", "of",
+  "on", "or", "the", "to", "v", "vs", "via",
+]);
+function titleCase(str) {
+  if (!str) return str;
+  const words = str.split(/(\s+)/);
+  let firstSeen = false;
+  const lastIdx = words.findLastIndex((w) => /\S/.test(w));
+  return words
+    .map((w, i) => {
+      if (!/\S/.test(w)) return w;
+      // Preserve all-caps acronyms (e.g., "AI", "MVP", "U.S.").
+      if (w.length > 1 && w === w.toUpperCase() && /[A-Z]/.test(w)) return w;
+      const lower = w.toLowerCase();
+      const isFirst = !firstSeen;
+      const isLast = i === lastIdx;
+      firstSeen = true;
+      if (!isFirst && !isLast && TITLE_LOWERCASE.has(lower)) return lower;
+      return lower[0].toUpperCase() + lower.slice(1);
+    })
+    .join("");
+}
 
 const CARNEGIE_DISPLAY = {
   R1: "R1: Very High Research",
@@ -367,14 +417,58 @@ export default function Map() {
   return (
     <div
       style={{
-        fontFamily: "'Source Serif Pro', 'Crimson Text', Georgia, serif",
-        background: PALETTE.cream,
+        fontFamily: FONT_BODY,
+        background: PALETTE.bg,
         minHeight: "100vh",
         color: PALETTE.ink,
-        padding: "32px 24px",
       }}
     >
-      <div style={{ maxWidth: 1240, margin: "0 auto" }}>
+      <style>{`
+        @media (max-width: 900px) {
+          .map-grid { grid-template-columns: 1fr !important; }
+          .stat-strip { grid-template-columns: repeat(2, 1fr) !important; }
+          .region-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .where-grid { grid-template-columns: 1fr !important; }
+          .who-grid { grid-template-columns: 1fr !important; }
+          .jobs-grid { grid-template-columns: repeat(2, 1fr) !important; }
+          .focus-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 600px) {
+          .stat-strip { grid-template-columns: 1fr !important; }
+          .region-grid { grid-template-columns: 1fr !important; }
+          .jobs-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+      {/* Brand ribbon — TAMU → Mays breadcrumb. Mirrors mays.tamu.edu's site-wide ribbon. */}
+      <div
+        role="banner"
+        style={{
+          background: PALETTE.maroon,
+          color: PALETTE.bg,
+          fontFamily: FONT_BODY,
+          fontSize: "0.8125rem",
+          padding: "8px 24px",
+          letterSpacing: "0.02em",
+        }}
+      >
+        <div style={{ maxWidth: 1240, margin: "0 auto" }}>
+          <a
+            href="https://www.tamu.edu/"
+            style={{ color: PALETTE.bg, textDecoration: "none", marginRight: 8 }}
+          >
+            Texas A&amp;M University
+          </a>
+          <span aria-hidden="true" style={{ opacity: 0.6 }}>›</span>
+          <a
+            href="https://mays.tamu.edu/"
+            style={{ color: PALETTE.bg, textDecoration: "none", marginLeft: 8 }}
+          >
+            Mays Business School
+          </a>
+        </div>
+      </div>
+
+      <main style={{ maxWidth: 1240, margin: "0 auto", padding: "32px 24px" }}>
         {/* Header */}
         <div
           style={{
@@ -385,37 +479,28 @@ export default function Map() {
         >
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: 11,
+              fontFamily: FONT_BODY,
+              fontSize: "0.8125rem",
               letterSpacing: "0.18em",
-              color: PALETTE.maroon,
+              color: PALETTE.maroonMuted,
               textTransform: "uppercase",
               marginBottom: 8,
+              fontWeight: 600,
             }}
           >
             Mays Business School · Texas A&amp;M University
           </div>
           <h1
             style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 900,
-              fontSize: 44,
-              lineHeight: 1.05,
-              margin: "0 0 12px 0",
-              letterSpacing: "-0.01em",
+              fontFamily: FONT_DISPLAY,
+              fontWeight: 400,
+              fontSize: "clamp(2rem, 4.5vw, 3rem)",
+              lineHeight: 1.2,
+              margin: "0 0 0.75rem 0",
+              color: PALETTE.maroon,
             }}
           >
-            The 2026 AI Venture Velocity Challenge,
-            <br />
-            <span
-              style={{
-                fontStyle: "italic",
-                fontWeight: 700,
-                color: PALETTE.maroon,
-              }}
-            >
-              mapped.
-            </span>
+            The 2026 AI Venture Velocity Challenge, Mapped.
           </h1>
           <p
             style={{
@@ -449,13 +534,13 @@ export default function Map() {
           <div>
             <div
               style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: 24,
-                fontWeight: 700,
-                fontStyle: "italic",
+                fontFamily: FONT_DISPLAY,
+                fontSize: "1.375rem",
+                fontWeight: 600,
+                color: PALETTE.bg,
               }}
             >
-              Find your institution.
+              Find Your Institution
             </div>
           </div>
           <div style={{ flex: "1 1 320px", position: "relative", minWidth: 320 }}>
@@ -472,7 +557,7 @@ export default function Map() {
               }}
               style={{
                 padding: "12px 38px 12px 16px",
-                fontFamily: "'Source Serif Pro', serif",
+                fontFamily: FONT_BODY,
                 fontSize: 15,
                 border: `1px solid ${PALETTE.cream}`,
                 background: PALETTE.paper,
@@ -505,7 +590,7 @@ export default function Map() {
                   textAlign: "center",
                   cursor: "pointer",
                   padding: 0,
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: FONT_BODY,
                   zIndex: 11,
                 }}
                 title="Clear search (Esc)"
@@ -525,13 +610,13 @@ export default function Map() {
                   zIndex: 10,
                   maxHeight: 320,
                   overflowY: "auto",
-                  boxShadow: "0 6px 16px rgba(0,0,0,0.18)",
+                  borderColor: PALETTE.maroon,
                 }}
               >
                 <div
                   style={{
                     padding: "8px 14px",
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: FONT_BODY,
                     fontSize: 10,
                     letterSpacing: "0.15em",
                     textTransform: "uppercase",
@@ -571,7 +656,7 @@ export default function Map() {
                         </div>
                         <div
                           style={{
-                            fontFamily: "'DM Mono', monospace",
+                            fontFamily: FONT_BODY,
                             fontSize: 10,
                             color: PALETTE.faint,
                             marginTop: 2,
@@ -582,7 +667,7 @@ export default function Map() {
                       </div>
                       <div
                         style={{
-                          fontFamily: "'Playfair Display', serif",
+                          fontFamily: FONT_DISPLAY,
                           fontWeight: 900,
                           fontSize: 16,
                           color: PALETTE.maroon,
@@ -595,18 +680,49 @@ export default function Map() {
               </div>
             )}
           </div>
+          <button
+            onClick={() => {
+              if (search.trim() && filtered.length > 0 && filtered.length < RAW.length) {
+                const top = filtered.slice().sort((a, b) => b.count - a.count)[0];
+                setZoomedSchool(top);
+                document.getElementById("national-footprint")?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
+            }}
+            disabled={!search.trim()}
+            style={{
+              padding: "12px 22px",
+              background: PALETTE.maroon,
+              color: PALETTE.bg,
+              border: `2px solid ${PALETTE.maroonDeep}`,
+              fontFamily: FONT_BODY,
+              fontSize: "1rem",
+              fontWeight: 700,
+              cursor: search.trim() ? "pointer" : "not-allowed",
+              opacity: search.trim() ? 1 : 0.5,
+              minWidth: 96,
+              minHeight: 44,
+            }}
+          >
+            Explore →
+          </button>
           {zoomedSchool && (
             <div
+              role="status"
+              aria-live="polite"
               style={{
                 padding: "12px 18px",
-                background: PALETTE.maroon,
-                fontFamily: "'Source Serif Pro', serif",
-                fontSize: 14,
+                background: PALETTE.maroonDeep,
+                color: PALETTE.bg,
+                fontFamily: FONT_BODY,
+                fontSize: "0.875rem",
                 flex: "0 1 auto",
               }}
             >
               <strong>{zoomedSchool.name}</strong> sent{" "}
-              <strong style={{ color: PALETTE.gold }}>
+              <strong style={{ color: PALETTE.bg, textDecoration: "underline" }}>
                 {zoomedSchool.count}
               </strong>{" "}
               application{zoomedSchool.count !== 1 ? "s" : ""}.
@@ -616,6 +732,7 @@ export default function Map() {
 
         {/* Stat strip */}
         <div
+          className="stat-strip"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(4, 1fr)",
@@ -628,10 +745,10 @@ export default function Map() {
           {[
             { num: TOTAL_APPS_DISPLAY, label: "Applications" },
             { num: TOTAL_INSTITUTIONS_DISPLAY, label: "Institutions" },
-            { num: top10Apps, label: "From Top 10 Schools" },
+            { num: top10Apps, label: "From the 10 Schools With the Most Submissions" },
             {
               num: Math.round((top10Apps / TOTAL_APPS) * 100) + "%",
-              label: "Concentrated in Top 10",
+              label: "Share From the 10 Highest-Submitting Schools",
             },
           ].map((s, i) => (
             <div
@@ -643,7 +760,7 @@ export default function Map() {
             >
               <div
                 style={{
-                  fontFamily: "'Playfair Display', serif",
+                  fontFamily: FONT_DISPLAY,
                   fontSize: 38,
                   fontWeight: 900,
                   lineHeight: 1,
@@ -654,7 +771,7 @@ export default function Map() {
               </div>
               <div
                 style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: FONT_BODY,
                   fontSize: 10,
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
@@ -672,6 +789,7 @@ export default function Map() {
         <div style={{ marginBottom: 32 }}>
           <SectionHeading num="01" title="By Census Region" />
           <div
+            className="region-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(4, 1fr)",
@@ -700,7 +818,7 @@ export default function Map() {
               >
                 <div
                   style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: FONT_BODY,
                     fontSize: 10,
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
@@ -713,7 +831,7 @@ export default function Map() {
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
                   <div
                     style={{
-                      fontFamily: "'Playfair Display', serif",
+                      fontFamily: FONT_DISPLAY,
                       fontWeight: 900,
                       fontSize: 32,
                       color: PALETTE.ink,
@@ -724,7 +842,7 @@ export default function Map() {
                   </div>
                   <div
                     style={{
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: FONT_BODY,
                       fontSize: 12,
                       color: "#666",
                     }}
@@ -765,8 +883,11 @@ export default function Map() {
         </div>
 
         {/* Map */}
-        <SectionHeading num="02" title="The National Footprint" />
+        <div id="national-footprint">
+          <SectionHeading num="02" title="The National Footprint" />
+        </div>
         <div
+          className="map-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 320px",
@@ -776,17 +897,43 @@ export default function Map() {
           }}
         >
           <div>
+            {(hasFilter || search) && (
+              <button
+                onClick={() => {
+                  clearAllThemes();
+                  setSelectedRegion(null);
+                  setSearch("");
+                  setZoomedSchool(null);
+                }}
+                style={{
+                  marginBottom: 12,
+                  padding: "10px 18px",
+                  background: PALETTE.bg,
+                  color: PALETTE.maroonDeep,
+                  border: `2px solid ${PALETTE.maroonDeep}`,
+                  fontFamily: FONT_BODY,
+                  fontSize: "0.875rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  minHeight: 44,
+                }}
+                aria-label="Reset map: clear all filters and search"
+              >
+                ← Reset Map
+              </button>
+            )}
             <div
               style={{
                 display: "flex",
                 gap: 14,
                 alignItems: "center",
                 marginBottom: 12,
-                fontFamily: "'DM Mono', monospace",
-                fontSize: 10,
-                letterSpacing: "0.12em",
+                fontFamily: FONT_BODY,
+                fontSize: "0.8125rem",
+                letterSpacing: "0.06em",
                 textTransform: "uppercase",
                 flexWrap: "wrap",
+                fontWeight: 600,
               }}
             >
               <span style={{ color: "#666" }}>Rank by:</span>
@@ -811,7 +958,7 @@ export default function Map() {
                 gap: 6,
                 alignItems: "center",
                 marginBottom: 12,
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: FONT_BODY,
                 fontSize: 10,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
@@ -831,7 +978,7 @@ export default function Map() {
                       background: active ? THEME_COLORS[k] : "transparent",
                       color: active ? "#fff" : PALETTE.ink,
                       border: `1px solid ${active ? THEME_COLORS[k] : PALETTE.ink}`,
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: FONT_BODY,
                       fontSize: 10,
                       cursor: "pointer",
                       letterSpacing: "0.08em",
@@ -861,7 +1008,7 @@ export default function Map() {
                     background: PALETTE.ink,
                     color: PALETTE.cream,
                     border: `1px solid ${PALETTE.ink}`,
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: FONT_BODY,
                     fontSize: 10,
                     cursor: "pointer",
                     letterSpacing: "0.1em",
@@ -875,7 +1022,7 @@ export default function Map() {
             {(hasThemeFilter || selectedRegion) && (
               <div
                 style={{
-                  fontFamily: "'Source Serif Pro', serif",
+                  fontFamily: FONT_BODY,
                   fontSize: 13,
                   marginBottom: 10,
                   padding: "8px 12px",
@@ -1038,7 +1185,6 @@ export default function Map() {
                           fillOpacity={0.78}
                           stroke={PALETTE.paper}
                           strokeWidth={1}
-                          filter="url(#dotShadow)"
                         />
                       </g>
                     );
@@ -1106,14 +1252,13 @@ export default function Map() {
                           cy={0}
                           r={r}
                           fill={fill}
-                          filter="url(#dotShadow)"
                         />
                         <text
                           x={0}
                           y={1}
                           textAnchor="middle"
                           dominantBaseline="middle"
-                          fontFamily="'Playfair Display', serif"
+                          fontFamily={FONT_DISPLAY}
                           fontWeight={900}
                           fontSize={
                             (d.mono?.length ?? 1) > 3
@@ -1155,7 +1300,7 @@ export default function Map() {
                         <text
                           x={lx + 8}
                           y={y - 16}
-                          fontFamily="'Source Serif Pro', serif"
+                          fontFamily={FONT_BODY}
                           fontWeight={600}
                           fontSize={13}
                           fill={PALETTE.cream}
@@ -1165,7 +1310,7 @@ export default function Map() {
                         <text
                           x={lx + 8}
                           y={y}
-                          fontFamily="'DM Mono', monospace"
+                          fontFamily={FONT_BODY}
                           fontSize={10}
                           fill={PALETTE.gold}
                           letterSpacing="0.1em"
@@ -1195,7 +1340,7 @@ export default function Map() {
                   display: "flex",
                   gap: 20,
                   alignItems: "center",
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: FONT_BODY,
                   fontSize: 10,
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
@@ -1246,7 +1391,7 @@ export default function Map() {
               style={{
                 padding: "14px 18px",
                 borderBottom: `1px solid ${PALETTE.ink}`,
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: FONT_BODY,
                 fontSize: 10,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
@@ -1320,7 +1465,7 @@ export default function Map() {
                         >
                           <div
                             style={{
-                              fontFamily: "'DM Mono', monospace",
+                              fontFamily: FONT_BODY,
                               fontSize: 11,
                               color: PALETTE.faint,
                             }}
@@ -1333,7 +1478,7 @@ export default function Map() {
                             </div>
                             <div
                               style={{
-                                fontFamily: "'DM Mono', monospace",
+                                fontFamily: FONT_BODY,
                                 fontSize: 9,
                                 color: PALETTE.faint,
                                 marginTop: 2,
@@ -1345,7 +1490,7 @@ export default function Map() {
                           </div>
                           <div
                             style={{
-                              fontFamily: "'Playfair Display', serif",
+                              fontFamily: FONT_DISPLAY,
                               fontWeight: 900,
                               fontSize: 18,
                               color: PALETTE.maroon,
@@ -1406,7 +1551,7 @@ export default function Map() {
                   >
                     <div
                       style={{
-                        fontFamily: "'DM Mono', monospace",
+                        fontFamily: FONT_BODY,
                         fontSize: 11,
                         color: PALETTE.faint,
                       }}
@@ -1419,7 +1564,7 @@ export default function Map() {
                       </div>
                       <div
                         style={{
-                          fontFamily: "'DM Mono', monospace",
+                          fontFamily: FONT_BODY,
                           fontSize: 9,
                           color: PALETTE.faint,
                           marginTop: 2,
@@ -1431,7 +1576,7 @@ export default function Map() {
                     </div>
                     <div
                       style={{
-                        fontFamily: "'Playfair Display', serif",
+                        fontFamily: FONT_DISPLAY,
                         fontWeight: 900,
                         fontSize: 18,
                         color: i < 10 ? PALETTE.maroon : PALETTE.ink,
@@ -1470,7 +1615,7 @@ export default function Map() {
             marginTop: 24,
             paddingTop: 16,
             borderTop: `1px solid ${PALETTE.paleRule}`,
-            fontFamily: "'DM Mono', monospace",
+            fontFamily: FONT_BODY,
             fontSize: 10,
             color: PALETTE.faint,
             letterSpacing: "0.12em",
@@ -1480,7 +1625,7 @@ export default function Map() {
         >
           Built for the AI Venture Velocity Challenge · Mays Business School
         </div>
-      </div>
+      </main>
     </div>
   );
 }
@@ -1494,7 +1639,7 @@ function ToggleButton({ active, onClick, children }) {
         background: active ? PALETTE.maroon : "transparent",
         color: active ? PALETTE.cream : PALETTE.ink,
         border: `1px solid ${PALETTE.ink}`,
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: FONT_BODY,
         fontSize: 10,
         cursor: "pointer",
         letterSpacing: "0.1em",
@@ -1517,31 +1662,33 @@ function SectionHeading({ num, title }) {
     >
       <div
         style={{
-          fontFamily: "'DM Mono', monospace",
-          fontSize: 11,
-          letterSpacing: "0.2em",
-          color: PALETTE.maroon,
+          fontFamily: FONT_BODY,
+          fontSize: "0.8125rem",
+          letterSpacing: "0.18em",
+          color: PALETTE.maroonMuted,
           fontWeight: 600,
+          textTransform: "uppercase",
         }}
       >
         {num}
       </div>
       <h2
         style={{
-          fontFamily: "'Playfair Display', serif",
-          fontSize: 22,
-          fontWeight: 700,
+          fontFamily: FONT_DISPLAY,
+          fontSize: "clamp(1.5rem, 2.6vw, 2rem)",
+          fontWeight: 400,
           margin: 0,
-          fontStyle: "italic",
+          color: PALETTE.maroon,
+          lineHeight: 1.2,
         }}
       >
-        {title}
+        {titleCase(title)}
       </h2>
       <div
         style={{
           flex: 1,
           height: 1,
-          background: PALETTE.ink,
+          background: PALETTE.line,
           marginLeft: 8,
         }}
       />
@@ -1590,7 +1737,7 @@ function ParetoChart({ data }) {
               x={pad.l - 6}
               y={y + 3}
               textAnchor="end"
-              fontFamily="'DM Mono', monospace"
+              fontFamily={FONT_BODY}
               fontSize={9}
               fill={PALETTE.faint}
             >
@@ -1628,7 +1775,7 @@ function ParetoChart({ data }) {
             <text
               x={x + 6}
               y={y - 6}
-              fontFamily="'DM Mono', monospace"
+              fontFamily={FONT_BODY}
               fontSize={10}
               fill={PALETTE.ink}
               fontWeight={600}
@@ -1648,7 +1795,7 @@ function ParetoChart({ data }) {
       <text
         x={pad.l}
         y={H - 10}
-        fontFamily="'DM Mono', monospace"
+        fontFamily={FONT_BODY}
         fontSize={9}
         fill="#666"
       >
@@ -1658,7 +1805,7 @@ function ParetoChart({ data }) {
         x={pad.l + innerW}
         y={H - 10}
         textAnchor="end"
-        fontFamily="'DM Mono', monospace"
+        fontFamily={FONT_BODY}
         fontSize={9}
         fill="#666"
       >
@@ -1668,7 +1815,7 @@ function ParetoChart({ data }) {
         x={pad.l + innerW / 2}
         y={H - 10}
         textAnchor="middle"
-        fontFamily="'DM Mono', monospace"
+        fontFamily={FONT_BODY}
         fontSize={9}
         fill="#666"
         letterSpacing="0.1em"
@@ -1721,18 +1868,18 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }
                 marginBottom: 3,
               }}
             >
-              <span style={{ fontWeight: 600 }}>{d.label}</span>
+              <span style={{ fontWeight: 600 }}>{dispLabel(d.label)}</span>
               <span
                 style={{
-                  fontFamily: "'DM Mono', monospace",
-                  fontSize: 11,
-                  color: "#666",
+                  fontFamily: FONT_BODY,
+                  fontSize: "0.75rem",
+                  color: PALETTE.inkSecondary,
                 }}
               >
                 {meta}
               </span>
             </div>
-            <div style={{ height: 8, background: PALETTE.paleRule }}>
+            <div style={{ height: 8, background: PALETTE.line }}>
               <div
                 style={{
                   width: `${w}%`,
@@ -1774,10 +1921,23 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
   return (
     <>
       {/* Section 03: Where the building is happening */}
-      <div style={{ marginBottom: 14 }}>
+      <div style={{ marginBottom: 8 }}>
         <SectionHeading num="03" title="Where the building is happening" />
       </div>
+      <p
+        style={{
+          fontFamily: FONT_BODY,
+          fontSize: "1rem",
+          color: PALETTE.inkSecondary,
+          marginTop: 0,
+          marginBottom: 18,
+          maxWidth: 760,
+        }}
+      >
+        Click any industry below to spotlight only those schools on the map. Click again to clear, or pick more than one to combine.
+      </p>
       <div
+        className="where-grid"
         style={{
           marginBottom: 32,
           display: "grid",
@@ -1788,12 +1948,13 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         <div>
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: 10,
+              fontFamily: FONT_BODY,
+              fontSize: "0.75rem",
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: PALETTE.maroon,
+              color: PALETTE.maroonMuted,
               marginBottom: 8,
+              fontWeight: 600,
             }}
           >
             Industries
@@ -1805,24 +1966,12 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
             onRowClick={(k) => toggleTheme(k)}
             isActive={(k) => selectedThemes.has(k)}
           />
-          <div
-            style={{
-              marginTop: 10,
-              fontFamily: "'DM Mono', monospace",
-              fontSize: 10,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: PALETTE.faint,
-            }}
-          >
-            Click a theme to spotlight those schools on the map.
-          </div>
         </div>
 
         <div>
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: FONT_BODY,
               fontSize: 10,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -1857,7 +2006,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span style={{ fontWeight: 600 }}>{TAG_DISPLAY[key]}</span>
                     <span
                       style={{
-                        fontFamily: "'DM Mono', monospace",
+                        fontFamily: FONT_BODY,
                         fontSize: 11,
                         color: "#666",
                       }}
@@ -1881,7 +2030,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           <div
             style={{
               marginTop: 10,
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: FONT_BODY,
               fontSize: 10,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
@@ -1901,6 +2050,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         <SectionHeading num="05" title="Who's building" />
       </div>
       <div
+        className="who-grid"
         style={{
           marginBottom: 32,
           display: "grid",
@@ -1911,7 +2061,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         <div>
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: FONT_BODY,
               fontSize: 10,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -1945,7 +2095,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span style={{ fontWeight: 600 }}>{s.label}</span>
                     <span
                       style={{
-                        fontFamily: "'DM Mono', monospace",
+                        fontFamily: FONT_BODY,
                         fontSize: 11,
                         color: "#666",
                       }}
@@ -1971,7 +2121,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         <div>
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: FONT_BODY,
               fontSize: 10,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -2005,7 +2155,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span style={{ fontWeight: 600 }}>{t.label}</span>
                     <span
                       style={{
-                        fontFamily: "'DM Mono', monospace",
+                        fontFamily: FONT_BODY,
                         fontSize: 11,
                         color: "#666",
                       }}
@@ -2055,6 +2205,7 @@ function JobsSection() {
         team is identifiable.
       </div>
       <div
+        className="jobs-grid"
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
@@ -2076,7 +2227,7 @@ function JobsSection() {
                 cursor: "pointer",
                 transition: "transform 0.15s ease, box-shadow 0.15s ease",
                 transform: isOpen ? "translateY(-2px)" : "none",
-                boxShadow: isOpen ? "0 6px 16px rgba(0,0,0,0.12)" : "none",
+                borderColor: isOpen ? PALETTE.maroon : PALETTE.maroonMuted,
                 minHeight: 160,
                 display: "flex",
                 flexDirection: "column",
@@ -2091,7 +2242,7 @@ function JobsSection() {
             >
               <div
                 style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: FONT_BODY,
                   fontSize: 9,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
@@ -2104,15 +2255,14 @@ function JobsSection() {
 
               <div
                 style={{
-                  fontFamily: "'Playfair Display', serif",
-                  fontSize: 17,
-                  fontWeight: 700,
-                  fontStyle: "italic",
+                  fontFamily: FONT_DISPLAY,
+                  fontSize: "1.0625rem",
+                  fontWeight: 600,
                   lineHeight: 1.25,
-                  color: PALETTE.ink,
+                  color: PALETTE.maroon,
                 }}
               >
-                When I'm a {c.persona}…
+                When I'm {aOrAn(c.persona)} {c.persona}…
               </div>
 
               {isOpen ? (
@@ -2150,7 +2300,7 @@ function JobsSection() {
                   style={{
                     fontSize: 12,
                     color: PALETTE.faint,
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: FONT_BODY,
                     letterSpacing: "0.05em",
                   }}
                 >
@@ -2218,7 +2368,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
       >
         <div
           style={{
-            fontFamily: "'DM Mono', monospace",
+            fontFamily: FONT_BODY,
             fontSize: 11,
             letterSpacing: "0.2em",
             color: themeColor,
@@ -2229,14 +2379,15 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
         </div>
         <h2
           style={{
-            fontFamily: "'Playfair Display', serif",
-            fontSize: 22,
-            fontWeight: 700,
+            fontFamily: FONT_DISPLAY,
+            fontSize: "clamp(1.5rem, 2.6vw, 2rem)",
+            fontWeight: 400,
             margin: 0,
-            fontStyle: "italic",
+            color: PALETTE.maroon,
+            lineHeight: 1.2,
           }}
         >
-          {theme}
+          {dispLabel(theme)}
         </h2>
         <div style={{ flex: 1, height: 1, background: PALETTE.ink, marginLeft: 8 }} />
         <button
@@ -2246,7 +2397,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
             background: PALETTE.ink,
             color: PALETTE.cream,
             border: `1px solid ${PALETTE.ink}`,
-            fontFamily: "'DM Mono', monospace",
+            fontFamily: FONT_BODY,
             fontSize: 10,
             cursor: "pointer",
             letterSpacing: "0.1em",
@@ -2257,6 +2408,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
       </div>
 
       <div
+        className="focus-grid"
         style={{
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -2266,7 +2418,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
         <div>
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: FONT_BODY,
               fontSize: 10,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -2301,7 +2453,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                     <span style={{ fontWeight: 600 }}>{inst.name}</span>
                     <span
                       style={{
-                        fontFamily: "'DM Mono', monospace",
+                        fontFamily: FONT_BODY,
                         fontSize: 11,
                         color: "#666",
                       }}
@@ -2334,7 +2486,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
         <div>
           <div
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: FONT_BODY,
               fontSize: 10,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -2374,7 +2526,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                     <span style={{ fontWeight: 600 }}>{inst.name}</span>
                     <span
                       style={{
-                        fontFamily: "'DM Mono', monospace",
+                        fontFamily: FONT_BODY,
                         fontSize: 11,
                         color: "#666",
                       }}
