@@ -95,18 +95,18 @@
     {
       "id": "jtbd_11",
       "theme": "Education",
-      "persona": "academic advisor or career coach overwhelmed by routine questions",
-      "situation": "inboxes fill with the same routine questions while at-risk students wait for real attention",
-      "want": "the routine questions answered accurately and on the record so my time goes to the students who need a human",
+      "persona": "campus staff member buried under routine inbound questions across financial aid, advising, and enrollment",
+      "situation": "the same routine questions arrive every day faster than a small team can answer them, while the students who genuinely need help wait",
+      "want": "the routine questions answered accurately and on the record so my time goes to the students who actually need a human",
       "outcome": "give every student a faster answer and still have hours left for the conversations only I can have",
       "cluster_size": 8
     },
     {
       "id": "jtbd_12",
       "theme": "Personal & Lifestyle",
-      "persona": "person preparing for a high-stakes conversation",
-      "situation": "an interview, presentation, or difficult talk is coming up and no one will give honest practice feedback",
-      "want": "a private space to rehearse and get specific, kind feedback on how I came across",
+      "persona": "person preparing for a real-life performance moment",
+      "situation": "an interview, presentation, difficult conversation, or physical performance is coming up and no one will give honest practice feedback",
+      "want": "a private space to rehearse, refine my delivery, and get specific feedback on how I came across or moved",
       "outcome": "walk into the room with real confidence instead of hoping it goes well",
       "cluster_size": 8
     },
@@ -122,9 +122,9 @@
     {
       "id": "jtbd_14",
       "theme": "Public Sector / Civic",
-      "persona": "resident or front-line public servant in an under-resourced setting",
-      "situation": "a moment of need shows up faster than the small team or hotline can respond to it",
-      "want": "the right rule, route, or report routed to whoever needs it now, even with a basic phone or no expertise",
+      "persona": "resident in an under-resourced setting trying to reach a public service that exists on paper",
+      "situation": "a moment of need shows up faster than the small team or hotline behind the service can respond to it",
+      "want": "the right rule, route, or report delivered to whoever needs it now, even from a basic phone and without expert knowledge of the system",
       "outcome": "make a public service that was theoretical actually reach the people it was built for",
       "cluster_size": 7
     },
