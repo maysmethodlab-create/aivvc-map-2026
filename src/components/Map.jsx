@@ -803,6 +803,14 @@ export default function Map() {
                 key={r.region}
                 role="button"
                 tabIndex={0}
+                aria-pressed={active}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedRegion(active ? null : r.region);
+                    clearAllThemes();
+                  }
+                }}
                 onClick={() => {
                   setSelectedRegion(active ? null : r.region);
                   clearAllThemes();
@@ -844,7 +852,7 @@ export default function Map() {
                     style={{
                       fontFamily: FONT_BODY,
                       fontSize: 12,
-                      color: "#666",
+                      color: PALETTE.inkSecondary,
                     }}
                   >
                     {r.share.toFixed(1)}%
@@ -936,7 +944,7 @@ export default function Map() {
                 fontWeight: 600,
               }}
             >
-              <span style={{ color: "#666" }}>Rank by:</span>
+              <span style={{ color: PALETTE.inkSecondary }}>Rank by:</span>
               {[
                 { id: "count", label: "Total apps" },
                 { id: "percapita", label: "Per 1k students" },
@@ -965,7 +973,7 @@ export default function Map() {
                 flexWrap: "wrap",
               }}
             >
-              <span style={{ color: "#666", marginRight: 4 }}>Filter by theme:</span>
+              <span style={{ color: PALETTE.inkSecondary, marginRight: 4 }}>Filter by theme:</span>
               {THEME_ORDER.filter((k) => (THEMES.themeTotals[k] || 0) > 0).map((k) => {
                 const active = selectedThemes.has(k);
                 const n = THEMES.themeTotals[k] || 0;
@@ -973,6 +981,7 @@ export default function Map() {
                   <button
                     key={k}
                     onClick={() => toggleTheme(k)}
+                    aria-pressed={active}
                     style={{
                       padding: "5px 9px",
                       background: active ? THEME_COLORS[k] : "transparent",
@@ -1073,6 +1082,8 @@ export default function Map() {
             >
               <svg
                 viewBox={`0 0 ${W} ${H}`}
+                role="img"
+                aria-label={`Map of the United States showing ${TOTAL_INSTITUTIONS_DISPLAY} institutions that submitted to the AI Venture Velocity Challenge. ${selectedRegion ? `Currently spotlighting the ${selectedRegion} region.` : ""}${hasThemeFilter ? ` Currently filtered to show schools with submissions in: ${[...selectedThemes].map(dispLabel).join(", ")}.` : ""}`}
                 style={{ width: "100%", height: "auto", display: "block" }}
               >
                 <defs>
@@ -2008,7 +2019,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                       style={{
                         fontFamily: FONT_BODY,
                         fontSize: 11,
-                        color: "#666",
+                        color: PALETTE.inkSecondary,
                       }}
                     >
                       {n} · {pct.toFixed(0)}%
@@ -2097,7 +2108,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                       style={{
                         fontFamily: FONT_BODY,
                         fontSize: 11,
-                        color: "#666",
+                        color: PALETTE.inkSecondary,
                       }}
                     >
                       {s.apps} · {pct.toFixed(0)}%
@@ -2157,7 +2168,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                       style={{
                         fontFamily: FONT_BODY,
                         fontSize: 11,
-                        color: "#666",
+                        color: PALETTE.inkSecondary,
                       }}
                     >
                       {t.apps} · {pct.toFixed(0)}%
@@ -2455,7 +2466,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                       style={{
                         fontFamily: FONT_BODY,
                         fontSize: 11,
-                        color: "#666",
+                        color: PALETTE.inkSecondary,
                       }}
                     >
                       {count} of {inst.count}
@@ -2528,7 +2539,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                       style={{
                         fontFamily: FONT_BODY,
                         fontSize: 11,
-                        color: "#666",
+                        color: PALETTE.inkSecondary,
                       }}
                     >
                       {Math.round(share * 100)}% ({count}/{inst.count})
