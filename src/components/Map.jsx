@@ -2068,21 +2068,15 @@ function JobsSection() {
             >
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "baseline",
                   fontFamily: "'DM Mono', monospace",
                   fontSize: 9,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
+                  color: themeColor,
+                  fontWeight: 600,
                 }}
               >
-                <span style={{ color: themeColor, fontWeight: 600 }}>
-                  {c.theme}
-                </span>
-                <span style={{ color: PALETTE.faint }}>
-                  ~{c.cluster_size} ventures
-                </span>
+                {c.theme}
               </div>
 
               <div
