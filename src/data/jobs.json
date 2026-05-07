@@ -40,7 +40,7 @@
     },
     {
       "id": "jtbd_05",
-      "theme": "Industrial / Energy",
+      "theme": "Industrial/Energy",
       "persona": "operations or maintenance lead at a mid-size plant or warehouse",
       "situation": "a critical asset is showing early warning signs but the team only finds out after a costly stoppage",
       "want": "the unusual pattern noticed and explained early so the right repair gets scheduled before production halts",
@@ -49,7 +49,7 @@
     },
     {
       "id": "jtbd_06",
-      "theme": "Industrial / Energy",
+      "theme": "Industrial/Energy",
       "persona": "buyer or operator working through a fragmented physical supply chain",
       "situation": "contracts, certifications, shipments, and quality records live in spreadsheets, emails, and phone calls",
       "want": "one trustworthy view of where every lot, load, or batch is and whether it meets the spec a customer is paying for",
@@ -58,7 +58,7 @@
     },
     {
       "id": "jtbd_07",
-      "theme": "Industrial / Energy",
+      "theme": "Industrial/Energy",
       "persona": "field worker making weather- or condition-driven decisions outdoors",
       "situation": "a planting, irrigation, dispatch, or repair call has to be made today with limited time and limited data",
       "want": "a clear recommendation in plain language that fits the conditions on my piece of ground right now",
@@ -67,7 +67,7 @@
     },
     {
       "id": "jtbd_08",
-      "theme": "Productivity & Workflow",
+      "theme": "Productivity/Workflow",
       "persona": "founder or operator at a small services business",
       "situation": "interest is coming in through calls, forms, and DMs faster than the team can answer",
       "want": "every inbound lead greeted, qualified, and booked the moment it arrives, in our voice and our rules",
@@ -76,7 +76,7 @@
     },
     {
       "id": "jtbd_09",
-      "theme": "Productivity & Workflow",
+      "theme": "Productivity/Workflow",
       "persona": "knowledge worker juggling many tools, meetings, and follow-ups",
       "situation": "the day is full of conversations and decisions that vanish the moment they end",
       "want": "what was said, decided, and promised captured and brought back to me at the right moment without typing it up",
@@ -103,7 +103,7 @@
     },
     {
       "id": "jtbd_12",
-      "theme": "Personal & Lifestyle",
+      "theme": "Personal/Lifestyle",
       "persona": "person preparing for a real-life performance moment",
       "situation": "an interview, presentation, difficult conversation, or physical performance is coming up and no one will give honest practice feedback",
       "want": "a private space to rehearse, refine my delivery, and get specific feedback on how I came across or moved",
@@ -112,7 +112,7 @@
     },
     {
       "id": "jtbd_13",
-      "theme": "Personal & Lifestyle",
+      "theme": "Personal/Lifestyle",
       "persona": "consumer drowning in options and conflicting advice for everyday decisions",
       "situation": "a routine choice such as what to buy, eat, or take has too many options and too much marketing noise",
       "want": "a neutral recommendation that reflects who I am, not what someone is paid to push",
@@ -121,7 +121,7 @@
     },
     {
       "id": "jtbd_14",
-      "theme": "Public Sector / Civic",
+      "theme": "Public Sector/Civic",
       "persona": "resident in an under-resourced setting trying to reach a public service that exists on paper",
       "situation": "a moment of need shows up faster than the small team or hotline behind the service can respond to it",
       "want": "the right rule, route, or report delivered to whoever needs it now, even from a basic phone and without expert knowledge of the system",

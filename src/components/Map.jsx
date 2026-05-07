@@ -6,28 +6,28 @@ import JOBS from "../data/jobs.json";
 
 const THEME_ORDER = [
   "Healthcare",
-  "Industrial / Energy",
-  "Productivity & Workflow",
+  "Industrial/Energy",
+  "Productivity/Workflow",
   "Education",
-  "Personal & Lifestyle",
-  "Media / Creative",
-  "Public Sector / Civic",
+  "Personal/Lifestyle",
+  "Media/Creative",
+  "Public Sector/Civic",
   "Finance",
-  "Frontier / Deep Tech",
+  "Frontier/Deep Tech",
   "Other",
 ];
 
 const THEME_COLORS = {
   Healthcare: "#c41230",
-  "Industrial / Energy": "#5a7d4a",
-  "Productivity & Workflow": "#0a4d68",
-  Education: "#2d5d3a",
-  "Personal & Lifestyle": "#d4a017",
-  "Media / Creative": "#9c5a3c",
-  "Public Sector / Civic": "#5a3838",
+  "Industrial/Energy": "#3d5e30",
+  "Productivity/Workflow": "#0a4d68",
+  Education: "#1f4528",
+  "Personal/Lifestyle": "#a87f0a",
+  "Media/Creative": "#7a4429",
+  "Public Sector/Civic": "#5a3838",
   Finance: "#1f3a8a",
-  "Frontier / Deep Tech": "#6b21a8",
-  Other: "#999999",
+  "Frontier/Deep Tech": "#6b21a8",
+  Other: "#5A5A5A",
 };
 
 const TAG_DISPLAY = {
@@ -114,7 +114,7 @@ const PALETTE = {
   inkMuted: "#5A5A5A",     // Captions, helper text. Was 'faint'.
   bg: "#FFFFFF",           // Default background.
   bgSubtle: "#EAEAEA",     // Footer / alternating section background.
-  line: "#D1D1D1",         // Default 1px border / divider.
+  line: "#999999",         // Default 1px border / divider. Bumped from #D1D1D1 to clear WCAG 1.4.11 (3:1 non-text contrast) on white.
   // Legacy names preserved for code that still references them; mapped to
   // new tokens so a brand-pure surface comes through.
   cream: "#FFFFFF",
@@ -144,7 +144,7 @@ function dispLabel(s) {
 // AP-style title case: capitalize all major words, lowercase short articles/prepositions/conjunctions
 // EXCEPT when first or last in the title.
 const TITLE_LOWERCASE = new Set([
-  "a", "an", "and", "as", "at", "but", "by", "en", "for", "if", "in", "of",
+  "a", "an", "and", "as", "at", "but", "by", "en", "for", "if", "in", "is", "of",
   "on", "or", "the", "to", "v", "vs", "via",
 ]);
 function titleCase(str) {
@@ -511,10 +511,22 @@ export default function Map() {
               color: PALETTE.muted,
             }}
           >
-            {TOTAL_APPS_DISPLAY} applications. {TOTAL_INSTITUTIONS_DISPLAY} institutions. The
-            inaugural Challenge drew submissions from research universities,
-            regional campuses, liberal arts colleges, and master's-focused
-            universities across all four U.S. census regions.
+            {TOTAL_APPS_DISPLAY} applications. {TOTAL_INSTITUTIONS_DISPLAY} institutions.
+            The inaugural Challenge drew submissions from research universities,
+            regional campuses, liberal arts colleges, master's-focused universities,
+            community colleges, and technical colleges across all four U.S. Census regions.
+          </p>
+          <p style={{ margin: "12px 0 0 0", fontSize: "1rem", color: PALETTE.inkSecondary }}>
+            <a
+              href="https://mays.tamu.edu/ai/competition/"
+              style={{
+                color: PALETTE.maroonDeep,
+                fontWeight: 600,
+                textDecoration: "underline",
+              }}
+            >
+              Learn more about the competition →
+            </a>
           </p>
         </div>
 
@@ -617,7 +629,7 @@ export default function Map() {
                   style={{
                     padding: "8px 14px",
                     fontFamily: FONT_BODY,
-                    fontSize: 10,
+                    fontSize: 12,
                     letterSpacing: "0.15em",
                     textTransform: "uppercase",
                     color: PALETTE.faint,
@@ -657,7 +669,7 @@ export default function Map() {
                         <div
                           style={{
                             fontFamily: FONT_BODY,
-                            fontSize: 10,
+                            fontSize: 12,
                             color: PALETTE.faint,
                             marginTop: 2,
                           }}
@@ -772,7 +784,7 @@ export default function Map() {
               <div
                 style={{
                   fontFamily: FONT_BODY,
-                  fontSize: 10,
+                  fontSize: 12,
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
                   marginTop: 6,
@@ -827,7 +839,7 @@ export default function Map() {
                 <div
                   style={{
                     fontFamily: FONT_BODY,
-                    fontSize: 10,
+                    fontSize: 12,
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
                     color: active ? PALETTE.gold : PALETTE.maroon,
@@ -967,7 +979,7 @@ export default function Map() {
                 alignItems: "center",
                 marginBottom: 12,
                 fontFamily: FONT_BODY,
-                fontSize: 10,
+                fontSize: 12,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 flexWrap: "wrap",
@@ -988,12 +1000,12 @@ export default function Map() {
                       color: active ? "#fff" : PALETTE.ink,
                       border: `1px solid ${active ? THEME_COLORS[k] : PALETTE.ink}`,
                       fontFamily: FONT_BODY,
-                      fontSize: 10,
+                      fontSize: 12,
                       cursor: "pointer",
                       letterSpacing: "0.08em",
                     }}
                   >
-                    {k.replace(" / ", "/").replace(" & ", "&")}
+                    {dispLabel(k)}
                     <span
                       style={{
                         marginLeft: 6,
@@ -1018,7 +1030,7 @@ export default function Map() {
                     color: PALETTE.cream,
                     border: `1px solid ${PALETTE.ink}`,
                     fontFamily: FONT_BODY,
-                    fontSize: 10,
+                    fontSize: 12,
                     cursor: "pointer",
                     letterSpacing: "0.1em",
                   }}
@@ -1322,7 +1334,7 @@ export default function Map() {
                           x={lx + 8}
                           y={y}
                           fontFamily={FONT_BODY}
-                          fontSize={10}
+                          fontSize={12}
                           fill={PALETTE.gold}
                           letterSpacing="0.1em"
                         >
@@ -1352,7 +1364,7 @@ export default function Map() {
                   gap: 20,
                   alignItems: "center",
                   fontFamily: FONT_BODY,
-                  fontSize: 10,
+                  fontSize: 12,
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   color: PALETTE.muted,
@@ -1403,7 +1415,7 @@ export default function Map() {
                 padding: "14px 18px",
                 borderBottom: `1px solid ${PALETTE.ink}`,
                 fontFamily: FONT_BODY,
-                fontSize: 10,
+                fontSize: 12,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
                 background: PALETTE.ink,
@@ -1477,7 +1489,7 @@ export default function Map() {
                           <div
                             style={{
                               fontFamily: FONT_BODY,
-                              fontSize: 11,
+                              fontSize: 12,
                               color: PALETTE.faint,
                             }}
                           >
@@ -1490,7 +1502,7 @@ export default function Map() {
                             <div
                               style={{
                                 fontFamily: FONT_BODY,
-                                fontSize: 9,
+                                fontSize: 12,
                                 color: PALETTE.faint,
                                 marginTop: 2,
                                 letterSpacing: "0.05em",
@@ -1563,7 +1575,7 @@ export default function Map() {
                     <div
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 11,
+                        fontSize: 12,
                         color: PALETTE.faint,
                       }}
                     >
@@ -1576,7 +1588,7 @@ export default function Map() {
                       <div
                         style={{
                           fontFamily: FONT_BODY,
-                          fontSize: 9,
+                          fontSize: 12,
                           color: PALETTE.faint,
                           marginTop: 2,
                           letterSpacing: "0.05em",
@@ -1627,7 +1639,7 @@ export default function Map() {
             paddingTop: 16,
             borderTop: `1px solid ${PALETTE.paleRule}`,
             fontFamily: FONT_BODY,
-            fontSize: 10,
+            fontSize: 12,
             color: PALETTE.faint,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
@@ -1651,7 +1663,7 @@ function ToggleButton({ active, onClick, children }) {
         color: active ? PALETTE.cream : PALETTE.ink,
         border: `1px solid ${PALETTE.ink}`,
         fontFamily: FONT_BODY,
-        fontSize: 10,
+        fontSize: 12,
         cursor: "pointer",
         letterSpacing: "0.1em",
       }}
@@ -1749,7 +1761,7 @@ function ParetoChart({ data }) {
               y={y + 3}
               textAnchor="end"
               fontFamily={FONT_BODY}
-              fontSize={9}
+              fontSize={12}
               fill={PALETTE.faint}
             >
               {p}%
@@ -1787,7 +1799,7 @@ function ParetoChart({ data }) {
               x={x + 6}
               y={y - 6}
               fontFamily={FONT_BODY}
-              fontSize={10}
+              fontSize={12}
               fill={PALETTE.ink}
               fontWeight={600}
             >
@@ -1807,7 +1819,7 @@ function ParetoChart({ data }) {
         x={pad.l}
         y={H - 10}
         fontFamily={FONT_BODY}
-        fontSize={9}
+        fontSize={12}
         fill="#666"
       >
         1
@@ -1817,7 +1829,7 @@ function ParetoChart({ data }) {
         y={H - 10}
         textAnchor="end"
         fontFamily={FONT_BODY}
-        fontSize={9}
+        fontSize={12}
         fill="#666"
       >
         {data.length}
@@ -1827,7 +1839,7 @@ function ParetoChart({ data }) {
         y={H - 10}
         textAnchor="middle"
         fontFamily={FONT_BODY}
-        fontSize={9}
+        fontSize={12}
         fill="#666"
         letterSpacing="0.1em"
       >
@@ -1983,14 +1995,14 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           <div
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: PALETTE.maroon,
               marginBottom: 8,
             }}
           >
-            What's powering them
+            What's Powering Them
           </div>
           <div
             style={{
@@ -2018,7 +2030,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 11,
+                        fontSize: 12,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2042,7 +2054,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
             style={{
               marginTop: 10,
               fontFamily: FONT_BODY,
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
               color: PALETTE.faint,
@@ -2073,14 +2085,14 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           <div
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: PALETTE.maroon,
               marginBottom: 8,
             }}
           >
-            Venture stage
+            Venture Stage
           </div>
           <div
             style={{
@@ -2107,7 +2119,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 11,
+                        fontSize: 12,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2133,14 +2145,14 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           <div
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: PALETTE.maroon,
               marginBottom: 8,
             }}
           >
-            Target customer
+            Target Customer
           </div>
           <div
             style={{
@@ -2167,7 +2179,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 11,
+                        fontSize: 12,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2254,7 +2266,7 @@ function JobsSection() {
               <div
                 style={{
                   fontFamily: FONT_BODY,
-                  fontSize: 9,
+                  fontSize: 12,
                   letterSpacing: "0.18em",
                   textTransform: "uppercase",
                   color: themeColor,
@@ -2380,7 +2392,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
         <div
           style={{
             fontFamily: FONT_BODY,
-            fontSize: 11,
+            fontSize: 12,
             letterSpacing: "0.2em",
             color: themeColor,
             fontWeight: 600,
@@ -2409,7 +2421,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
             color: PALETTE.cream,
             border: `1px solid ${PALETTE.ink}`,
             fontFamily: FONT_BODY,
-            fontSize: 10,
+            fontSize: 12,
             cursor: "pointer",
             letterSpacing: "0.1em",
           }}
@@ -2430,7 +2442,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
           <div
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: themeColor,
@@ -2465,7 +2477,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 11,
+                        fontSize: 12,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2498,7 +2510,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
           <div
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 10,
+              fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: themeColor,
@@ -2538,7 +2550,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 11,
+                        fontSize: 12,
                         color: PALETTE.inkSecondary,
                       }}
                     >
