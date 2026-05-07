@@ -1043,7 +1043,7 @@ export default function Map() {
                         Showing schools with{" "}
                         {themesArr.map((t, i) => (
                           <span key={t}>
-                            <strong style={{ color: THEME_COLORS[t] }}>{t}</strong>
+                            <strong style={{ color: THEME_COLORS[t] }}>{dispLabel(t)}</strong>
                             {i < themesArr.length - 2
                               ? ", "
                               : i === themesArr.length - 2
@@ -1320,9 +1320,9 @@ export default function Map() {
                               const tc = themeCountForSchool(d.unitid);
                               const themeLabel = onlyTheme || "selected themes";
                               if (tc !== null) {
-                                return `${tc} ${themeLabel.toUpperCase()} APP${tc !== 1 ? "S" : ""}`;
+                                return `${tc} ${dispLabel(themeLabel).toUpperCase()} APP${tc !== 1 ? "S" : ""}`;
                               }
-                              return `1–2 ${themeLabel.toUpperCase()} APPS`;
+                              return `1–2 ${dispLabel(themeLabel).toUpperCase()} APPS`;
                             }
                             return `${d.count} APP${d.count !== 1 ? "S" : ""} · ${carnLabel}`;
                           })()}
@@ -1402,7 +1402,7 @@ export default function Map() {
               }}
             >
               {hasThemeFilter
-                ? `Ranked: ${onlyTheme ? onlyTheme + " " : ""}Submissions`
+                ? `Ranked: ${onlyTheme ? dispLabel(onlyTheme) + " " : ""}Submissions`
                 : scaleMode === "count"
                 ? "Ranked: Total Applications"
                 : "Ranked: Apps per 1k Students"}
@@ -2250,7 +2250,7 @@ function JobsSection() {
                   fontWeight: 600,
                 }}
               >
-                {c.theme}
+                {dispLabel(c.theme)}
               </div>
 
               <div
