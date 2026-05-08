@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from "react";
 import * as d3 from "d3";
 import RAW_DATA from "../data/institutions.json";
 import THEMES from "../data/themes.json";
-import JOBS from "../data/jobs.json";
 
 const THEME_ORDER = [
   "Healthcare",
@@ -128,13 +127,6 @@ const PALETTE = {
 
 const FONT_DISPLAY = "'Oswald', Arial, sans-serif";
 const FONT_BODY = "'Work Sans', Arial, sans-serif";
-
-// Helper: pick "a" or "an" based on first letter of the persona (vowel sound approximation).
-function aOrAn(noun) {
-  if (!noun) return "a";
-  const first = noun.trim()[0]?.toLowerCase();
-  return ["a", "e", "i", "o", "u"].includes(first) ? "an" : "a";
-}
 
 // Helper: collapse spaces around slashes for inline display.
 function dispLabel(s) {
@@ -430,13 +422,11 @@ export default function Map() {
           .region-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .where-grid { grid-template-columns: 1fr !important; }
           .who-grid { grid-template-columns: 1fr !important; }
-          .jobs-grid { grid-template-columns: repeat(2, 1fr) !important; }
           .focus-grid { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 600px) {
           .stat-strip { grid-template-columns: 1fr !important; }
           .region-grid { grid-template-columns: 1fr !important; }
-          .jobs-grid { grid-template-columns: 1fr !important; }
         }
       `}</style>
       {/* Brand ribbon — TAMU → Mays breadcrumb. Mirrors mays.tamu.edu's site-wide ribbon. */}
@@ -2109,13 +2099,11 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
       </div>
 
       </section>
-      {/* Section 04: What students are getting done */}
-      <JobsSection />
 
-      {/* Section 05: Who's Building */}
+      {/* Section 04: Who's Building */}
       <section aria-labelledby="who-heading">
       <div style={{ marginBottom: 14 }}>
-        <SectionHeading id="who-heading" num="05" title="Who's building" />
+        <SectionHeading id="who-heading" num="04" title="Who's building" />
       </div>
       <div
         className="who-grid"
@@ -2253,150 +2241,6 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
   );
 }
 
-function JobsSection() {
-  const cards = JOBS.cards || [];
-  const [activeId, setActiveId] = useState(null);
-
-  return (
-    <section aria-labelledby="getting-done-heading" style={{ marginBottom: 32 }}>
-      <SectionHeading id="getting-done-heading" num="04" title="What they're getting done" />
-      <div
-        style={{
-          fontSize: 14,
-          lineHeight: 1.5,
-          color: PALETTE.muted,
-          marginBottom: 18,
-          maxWidth: 760,
-        }}
-      >
-        Each card is one of the recurring{" "}
-        <em>jobs to be done</em> we saw across the submissions. Click a card to
-        see the full pattern — the persona, the situation, what they want, and
-        why it matters. Each card represents 5 or more ventures so no single
-        team is identifiable.
-      </div>
-      <div
-        className="jobs-grid"
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 14,
-        }}
-      >
-        {cards.map((c) => {
-          const isOpen = activeId === c.id;
-          const themeColor = THEME_COLORS[c.theme] || PALETTE.maroon;
-          const cardId = `jtbd-card-${c.id}`;
-          return (
-            <button
-              key={c.id}
-              type="button"
-              aria-expanded={isOpen}
-              aria-labelledby={cardId}
-              onClick={() => setActiveId(isOpen ? null : c.id)}
-              style={{
-                background: PALETTE.paper,
-                border: `1px solid ${PALETTE.maroonMuted}`,
-                borderTop: `4px solid ${themeColor}`,
-                padding: "14px 16px 16px 16px",
-                cursor: "pointer",
-                transition: "transform 0.15s ease, border-color 0.15s ease",
-                transform: isOpen ? "translateY(-2px)" : "none",
-                borderColor: isOpen ? PALETTE.maroon : PALETTE.maroonMuted,
-                minHeight: 160,
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-                textAlign: "left",
-                font: "inherit",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = PALETTE.cream)
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = PALETTE.paper)
-              }
-            >
-              <div
-                aria-hidden="true"
-                style={{
-                  fontFamily: FONT_BODY,
-                  fontSize: 12,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  color: themeColor,
-                  fontWeight: 600,
-                }}
-              >
-                {dispLabel(c.theme)}
-              </div>
-
-              <h3
-                id={cardId}
-                style={{
-                  fontFamily: FONT_DISPLAY,
-                  fontSize: "1.0625rem",
-                  fontWeight: 600,
-                  lineHeight: 1.25,
-                  color: PALETTE.maroon,
-                  margin: 0,
-                }}
-              >
-                <span style={{ position: "absolute", left: -10000, top: "auto", width: 1, height: 1, overflow: "hidden" }}>
-                  {dispLabel(c.theme)} job to be done:{" "}
-                </span>
-                When I'm {aOrAn(c.persona)} {c.persona}…
-              </h3>
-
-              {isOpen ? (
-                <>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      lineHeight: 1.45,
-                      color: PALETTE.muted,
-                    }}
-                  >
-                    …and {c.situation},
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      lineHeight: 1.45,
-                      color: PALETTE.ink,
-                    }}
-                  >
-                    <strong>I want</strong> {c.want},
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      lineHeight: 1.45,
-                      color: PALETTE.ink,
-                    }}
-                  >
-                    <strong>so I can</strong> {c.outcome}.
-                  </div>
-                </>
-              ) : (
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: PALETTE.faint,
-                    fontFamily: FONT_BODY,
-                    letterSpacing: "0.05em",
-                  }}
-                >
-                  Click to read the full job →
-                </div>
-              )}
-            </button>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
 
 function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePresence, onClear }) {
   const themeColor = THEME_COLORS[theme] || PALETTE.maroon;
