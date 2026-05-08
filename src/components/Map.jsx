@@ -544,16 +544,18 @@ export default function Map() {
           }}
         >
           <div>
-            <div
+            <h2
+              id="find-institution-heading"
               style={{
                 fontFamily: FONT_DISPLAY,
                 fontSize: "1.375rem",
                 fontWeight: 600,
                 color: PALETTE.bg,
+                margin: 0,
               }}
             >
               Find Your Institution
-            </div>
+            </h2>
           </div>
           <div style={{ flex: "1 1 320px", position: "relative", minWidth: 320 }}>
             <input
@@ -798,8 +800,8 @@ export default function Map() {
         </div>
 
         {/* Region rollup */}
-        <div style={{ marginBottom: 32 }}>
-          <SectionHeading num="01" title="By Census Region" />
+        <section aria-labelledby="region-heading" style={{ marginBottom: 32 }}>
+          <SectionHeading id="region-heading" num="01" title="By Census Region" />
           <div
             className="region-grid"
             style={{
@@ -836,18 +838,19 @@ export default function Map() {
                   transition: "background 0.15s ease",
                 }}
               >
-                <div
+                <h3
                   style={{
                     fontFamily: FONT_BODY,
                     fontSize: 12,
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
                     color: active ? PALETTE.gold : PALETTE.maroon,
-                    marginBottom: 6,
+                    margin: "0 0 6px 0",
+                    fontWeight: 600,
                   }}
                 >
                   {r.region}
-                </div>
+                </h3>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
                   <div
                     style={{
@@ -900,12 +903,11 @@ export default function Map() {
               );
             })}
           </div>
-        </div>
+        </section>
 
         {/* Map */}
-        <div id="national-footprint">
-          <SectionHeading num="02" title="The National Footprint" />
-        </div>
+        <section aria-labelledby="footprint-heading" id="national-footprint">
+          <SectionHeading id="footprint-heading" num="02" title="The National Footprint" />
         <div
           className="map-grid"
           style={{
@@ -1410,12 +1412,14 @@ export default function Map() {
               overflowY: "auto",
             }}
           >
-            <div
+            <h3
               style={{
                 padding: "14px 18px",
+                margin: 0,
                 borderBottom: `1px solid ${PALETTE.ink}`,
                 fontFamily: FONT_BODY,
                 fontSize: 12,
+                fontWeight: 600,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
                 background: PALETTE.ink,
@@ -1429,7 +1433,7 @@ export default function Map() {
                 : scaleMode === "count"
                 ? "Ranked: Total Applications"
                 : "Ranked: Apps per 1k Students"}
-            </div>
+            </h3>
             {(() => {
               // When a theme is selected, build a theme-specific ranking.
               // Show only schools with safe count >= 3 (privacy rule), sorted by
@@ -1465,11 +1469,21 @@ export default function Map() {
                       return (
                         <div
                           key={d.unitid + "-" + i}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`${d.name}, ${total} ${onlyTheme ? dispLabel(onlyTheme) + " " : ""}submissions of ${d.count} total. Activate to spotlight on the map.`}
                           onMouseEnter={() => setHovered(d.unitid)}
                           onMouseLeave={() => setHovered(null)}
                           onClick={() => {
                             setSearch(d.name);
                             setZoomedSchool(d);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setSearch(d.name);
+                              setZoomedSchool(d);
+                            }
                           }}
                           style={{
                             padding: "10px 18px",
@@ -1487,6 +1501,7 @@ export default function Map() {
                           }}
                         >
                           <div
+                            aria-hidden="true"
                             style={{
                               fontFamily: FONT_BODY,
                               fontSize: 12,
@@ -1550,11 +1565,21 @@ export default function Map() {
                 return (
                   <div
                     key={d.unitid + "-" + i}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`${d.name}, ${scaleMode === "count" ? `${d.count} applications` : `${d.perCapita.toFixed(2)} apps per 1k students`}. Activate to spotlight on the map.`}
                     onMouseEnter={() => setHovered(d.unitid)}
                     onMouseLeave={() => setHovered(null)}
                     onClick={() => {
                       setSearch(d.name);
                       setZoomedSchool(d);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSearch(d.name);
+                        setZoomedSchool(d);
+                      }
                     }}
                     style={{
                       padding: "10px 18px",
@@ -1573,6 +1598,7 @@ export default function Map() {
                     }}
                   >
                     <div
+                      aria-hidden="true"
                       style={{
                         fontFamily: FONT_BODY,
                         fontSize: 12,
@@ -1613,6 +1639,7 @@ export default function Map() {
             })()}
           </div>
         </div>
+        </section>
 
         {/* Theme-specific Volume vs. Lean panel — only shown when EXACTLY ONE theme is selected */}
         {onlyTheme && (
@@ -1673,7 +1700,7 @@ function ToggleButton({ active, onClick, children }) {
   );
 }
 
-function SectionHeading({ num, title }) {
+function SectionHeading({ num, title, id }) {
   return (
     <div
       style={{
@@ -1684,6 +1711,7 @@ function SectionHeading({ num, title }) {
       }}
     >
       <div
+        aria-hidden="true"
         style={{
           fontFamily: FONT_BODY,
           fontSize: "0.8125rem",
@@ -1696,6 +1724,7 @@ function SectionHeading({ num, title }) {
         {num}
       </div>
       <h2
+        id={id}
         style={{
           fontFamily: FONT_DISPLAY,
           fontSize: "clamp(1.5rem, 2.6vw, 2rem)",
@@ -1869,11 +1898,23 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }
             : `${d.apps} ventures · ${pct.toFixed(1)}%`;
         const isActiveRow =
           onRowClick && (isActive ? isActive(colorKey) : activeKey === colorKey);
+        const RowEl = onRowClick ? "button" : "div";
+        const interactiveProps = onRowClick
+          ? {
+              type: "button",
+              "aria-pressed": !!isActiveRow,
+              onClick: () => onRowClick(colorKey),
+            }
+          : {};
         return (
-          <div
+          <RowEl
             key={colorKey}
-            onClick={() => onRowClick && onRowClick(colorKey)}
+            {...interactiveProps}
             style={{
+              display: "block",
+              width: "100%",
+              textAlign: "left",
+              font: "inherit",
               marginBottom: 10,
               padding: onRowClick ? "4px 6px" : 0,
               margin: onRowClick ? "0 -6px 6px -6px" : "0 0 10px 0",
@@ -1911,7 +1952,7 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }
                 }}
               />
             </div>
-          </div>
+          </RowEl>
         );
       })}
     </div>
@@ -1944,8 +1985,9 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
   return (
     <>
       {/* Section 03: Where the building is happening */}
+      <section aria-labelledby="where-heading">
       <div style={{ marginBottom: 8 }}>
-        <SectionHeading num="03" title="Where the building is happening" />
+        <SectionHeading id="where-heading" num="03" title="Where the building is happening" />
       </div>
       <p
         style={{
@@ -1969,19 +2011,19 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         }}
       >
         <div>
-          <div
+          <h3
             style={{
               fontFamily: FONT_BODY,
               fontSize: "0.75rem",
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: PALETTE.maroonMuted,
-              marginBottom: 8,
+              margin: "0 0 8px 0",
               fontWeight: 600,
             }}
           >
             Industries
-          </div>
+          </h3>
           <BarBreakdown
             data={themeRows}
             total={readableTotal}
@@ -1992,18 +2034,19 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         </div>
 
         <div>
-          <div
+          <h3
             style={{
               fontFamily: FONT_BODY,
               fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: PALETTE.maroon,
-              marginBottom: 8,
+              color: PALETTE.maroonMuted,
+              margin: "0 0 8px 0",
+              fontWeight: 600,
             }}
           >
             What's Powering Them
-          </div>
+          </h3>
           <div
             style={{
               background: PALETTE.paper,
@@ -2065,12 +2108,14 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         </div>
       </div>
 
+      </section>
       {/* Section 04: What students are getting done */}
       <JobsSection />
 
       {/* Section 05: Who's Building */}
+      <section aria-labelledby="who-heading">
       <div style={{ marginBottom: 14 }}>
-        <SectionHeading num="05" title="Who's building" />
+        <SectionHeading id="who-heading" num="05" title="Who's building" />
       </div>
       <div
         className="who-grid"
@@ -2082,18 +2127,19 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         }}
       >
         <div>
-          <div
+          <h3
             style={{
               fontFamily: FONT_BODY,
               fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: PALETTE.maroon,
-              marginBottom: 8,
+              color: PALETTE.maroonMuted,
+              margin: "0 0 8px 0",
+              fontWeight: 600,
             }}
           >
             Venture Stage
-          </div>
+          </h3>
           <div
             style={{
               background: PALETTE.paper,
@@ -2142,18 +2188,19 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         </div>
 
         <div>
-          <div
+          <h3
             style={{
               fontFamily: FONT_BODY,
               fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: PALETTE.maroon,
-              marginBottom: 8,
+              color: PALETTE.maroonMuted,
+              margin: "0 0 8px 0",
+              fontWeight: 600,
             }}
           >
             Target Customer
-          </div>
+          </h3>
           <div
             style={{
               background: PALETTE.paper,
@@ -2201,6 +2248,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           </div>
         </div>
       </div>
+      </section>
     </>
   );
 }
@@ -2210,8 +2258,8 @@ function JobsSection() {
   const [activeId, setActiveId] = useState(null);
 
   return (
-    <div style={{ marginBottom: 32 }}>
-      <SectionHeading num="04" title="What they're getting done" />
+    <section aria-labelledby="getting-done-heading" style={{ marginBottom: 32 }}>
+      <SectionHeading id="getting-done-heading" num="04" title="What they're getting done" />
       <div
         style={{
           fontSize: 14,
@@ -2238,23 +2286,29 @@ function JobsSection() {
         {cards.map((c) => {
           const isOpen = activeId === c.id;
           const themeColor = THEME_COLORS[c.theme] || PALETTE.maroon;
+          const cardId = `jtbd-card-${c.id}`;
           return (
-            <div
+            <button
               key={c.id}
+              type="button"
+              aria-expanded={isOpen}
+              aria-labelledby={cardId}
               onClick={() => setActiveId(isOpen ? null : c.id)}
               style={{
                 background: PALETTE.paper,
-                border: `1px solid ${PALETTE.ink}`,
+                border: `1px solid ${PALETTE.maroonMuted}`,
                 borderTop: `4px solid ${themeColor}`,
                 padding: "14px 16px 16px 16px",
                 cursor: "pointer",
-                transition: "transform 0.15s ease, box-shadow 0.15s ease",
+                transition: "transform 0.15s ease, border-color 0.15s ease",
                 transform: isOpen ? "translateY(-2px)" : "none",
                 borderColor: isOpen ? PALETTE.maroon : PALETTE.maroonMuted,
                 minHeight: 160,
                 display: "flex",
                 flexDirection: "column",
                 gap: 8,
+                textAlign: "left",
+                font: "inherit",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.background = PALETTE.cream)
@@ -2264,6 +2318,7 @@ function JobsSection() {
               }
             >
               <div
+                aria-hidden="true"
                 style={{
                   fontFamily: FONT_BODY,
                   fontSize: 12,
@@ -2276,17 +2331,22 @@ function JobsSection() {
                 {dispLabel(c.theme)}
               </div>
 
-              <div
+              <h3
+                id={cardId}
                 style={{
                   fontFamily: FONT_DISPLAY,
                   fontSize: "1.0625rem",
                   fontWeight: 600,
                   lineHeight: 1.25,
                   color: PALETTE.maroon,
+                  margin: 0,
                 }}
               >
+                <span style={{ position: "absolute", left: -10000, top: "auto", width: 1, height: 1, overflow: "hidden" }}>
+                  {dispLabel(c.theme)} job to be done:{" "}
+                </span>
                 When I'm {aOrAn(c.persona)} {c.persona}…
-              </div>
+              </h3>
 
               {isOpen ? (
                 <>
@@ -2330,11 +2390,11 @@ function JobsSection() {
                   Click to read the full job →
                 </div>
               )}
-            </div>
+            </button>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -2439,18 +2499,19 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
         }}
       >
         <div>
-          <div
+          <h3
             style={{
               fontFamily: FONT_BODY,
               fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: themeColor,
-              marginBottom: 8,
+              margin: "0 0 8px 0",
+              fontWeight: 600,
             }}
           >
             Volume — most {theme.split(" ")[0].toLowerCase()} ventures
-          </div>
+          </h3>
           <div
             style={{
               background: PALETTE.paper,
@@ -2507,18 +2568,19 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
         </div>
 
         <div>
-          <div
+          <h3
             style={{
               fontFamily: FONT_BODY,
               fontSize: 12,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: themeColor,
-              marginBottom: 8,
+              margin: "0 0 8px 0",
+              fontWeight: 600,
             }}
           >
             Lean — {theme.split(" ")[0].toLowerCase()} as % of school's mix
-          </div>
+          </h3>
           <div
             style={{
               background: PALETTE.paper,
