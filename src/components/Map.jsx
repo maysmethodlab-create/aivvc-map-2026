@@ -109,8 +109,8 @@ const PALETTE = {
   maroonDeep: "#3C0000",   // Link color, button border.
   maroonMuted: "#732F2F",  // Eyebrows, dotted frame outline, muted accents.
   ink: "#000000",          // Strong text, body copy when emphasis matters.
-  inkSecondary: "#3E3E3E", // Default body paragraph color.
-  inkMuted: "#5A5A5A",     // Captions, helper text. Was 'faint'.
+  inkSecondary: "#1A1A1A", // Default body paragraph color. Darkened per Cindy for stronger type contrast.
+  inkMuted: "#2A2A2A",     // Captions, helper text. Darkened per Cindy. ~14:1 on white.
   bg: "#FFFFFF",           // Default background.
   bgSubtle: "#EAEAEA",     // Footer / alternating section background.
   line: "#999999",         // Default 1px border / divider. Bumped from #D1D1D1 to clear WCAG 1.4.11 (3:1 non-text contrast) on white.
@@ -119,8 +119,8 @@ const PALETTE = {
   cream: "#FFFFFF",
   paper: "#FFFFFF",
   rule: "#000000",
-  muted: "#3E3E3E",
-  faint: "#5A5A5A",
+  muted: "#1A1A1A",
+  faint: "#2A2A2A",
   gold: "#500000",
   paleRule: "#D1D1D1",
 };
@@ -436,7 +436,7 @@ export default function Map() {
           background: PALETTE.maroon,
           color: PALETTE.bg,
           fontFamily: FONT_BODY,
-          fontSize: "0.8125rem",
+          fontSize: "1rem",
           padding: "8px 24px",
           letterSpacing: "0.02em",
         }}
@@ -470,7 +470,7 @@ export default function Map() {
           <div
             style={{
               fontFamily: FONT_BODY,
-              fontSize: "0.8125rem",
+              fontSize: "1rem",
               letterSpacing: "0.18em",
               color: PALETTE.maroonMuted,
               textTransform: "uppercase",
@@ -562,7 +562,7 @@ export default function Map() {
               style={{
                 padding: "12px 38px 12px 16px",
                 fontFamily: FONT_BODY,
-                fontSize: 15,
+                fontSize: 16,
                 border: `1px solid ${PALETTE.cream}`,
                 background: PALETTE.paper,
                 color: PALETTE.ink,
@@ -589,7 +589,7 @@ export default function Map() {
                   border: "none",
                   background: PALETTE.ink,
                   color: PALETTE.cream,
-                  fontSize: 14,
+                  fontSize: 16,
                   lineHeight: "24px",
                   textAlign: "center",
                   cursor: "pointer",
@@ -621,7 +621,7 @@ export default function Map() {
                   style={{
                     padding: "8px 14px",
                     fontFamily: FONT_BODY,
-                    fontSize: 12,
+                    fontSize: 16,
                     letterSpacing: "0.15em",
                     textTransform: "uppercase",
                     color: PALETTE.faint,
@@ -655,13 +655,13 @@ export default function Map() {
                       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                     >
                       <div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: PALETTE.ink }}>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: PALETTE.ink }}>
                           {d.name}
                         </div>
                         <div
                           style={{
                             fontFamily: FONT_BODY,
-                            fontSize: 12,
+                            fontSize: 16,
                             color: PALETTE.faint,
                             marginTop: 2,
                           }}
@@ -698,14 +698,13 @@ export default function Map() {
             disabled={!search.trim()}
             style={{
               padding: "12px 22px",
-              background: PALETTE.maroon,
-              color: PALETTE.bg,
-              border: `2px solid ${PALETTE.maroonDeep}`,
+              background: search.trim() ? PALETTE.bg : "#B8B8B8",
+              color: search.trim() ? PALETTE.maroon : "#1A1A1A",
+              border: `2px solid ${PALETTE.bg}`,
               fontFamily: FONT_BODY,
               fontSize: "1rem",
               fontWeight: 700,
               cursor: search.trim() ? "pointer" : "not-allowed",
-              opacity: search.trim() ? 1 : 0.5,
               minWidth: 96,
               minHeight: 44,
             }}
@@ -721,7 +720,7 @@ export default function Map() {
                 background: PALETTE.maroonDeep,
                 color: PALETTE.bg,
                 fontFamily: FONT_BODY,
-                fontSize: "0.875rem",
+                fontSize: "1rem",
                 flex: "0 1 auto",
               }}
             >
@@ -776,7 +775,7 @@ export default function Map() {
               <div
                 style={{
                   fontFamily: FONT_BODY,
-                  fontSize: 12,
+                  fontSize: 16,
                   letterSpacing: "0.15em",
                   textTransform: "uppercase",
                   marginTop: 6,
@@ -831,7 +830,7 @@ export default function Map() {
                 <h3
                   style={{
                     fontFamily: FONT_BODY,
-                    fontSize: 12,
+                    fontSize: 16,
                     letterSpacing: "0.18em",
                     textTransform: "uppercase",
                     color: active ? PALETTE.gold : PALETTE.maroon,
@@ -856,7 +855,7 @@ export default function Map() {
                   <div
                     style={{
                       fontFamily: FONT_BODY,
-                      fontSize: 12,
+                      fontSize: 16,
                       color: PALETTE.inkSecondary,
                     }}
                   >
@@ -881,7 +880,7 @@ export default function Map() {
                 </div>
                 <div
                   style={{
-                    fontSize: 12,
+                    fontSize: 16,
                     lineHeight: 1.4,
                     color: active ? PALETTE.cream : PALETTE.muted,
                   }}
@@ -924,7 +923,7 @@ export default function Map() {
                   color: PALETTE.maroonDeep,
                   border: `2px solid ${PALETTE.maroonDeep}`,
                   fontFamily: FONT_BODY,
-                  fontSize: "0.875rem",
+                  fontSize: "1rem",
                   fontWeight: 700,
                   cursor: "pointer",
                   minHeight: 44,
@@ -941,7 +940,7 @@ export default function Map() {
                 alignItems: "center",
                 marginBottom: 12,
                 fontFamily: FONT_BODY,
-                fontSize: "0.8125rem",
+                fontSize: "1rem",
                 letterSpacing: "0.06em",
                 textTransform: "uppercase",
                 flexWrap: "wrap",
@@ -971,7 +970,7 @@ export default function Map() {
                 alignItems: "center",
                 marginBottom: 12,
                 fontFamily: FONT_BODY,
-                fontSize: 12,
+                fontSize: 16,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 flexWrap: "wrap",
@@ -992,7 +991,7 @@ export default function Map() {
                       color: active ? "#fff" : PALETTE.ink,
                       border: `1px solid ${active ? THEME_COLORS[k] : PALETTE.ink}`,
                       fontFamily: FONT_BODY,
-                      fontSize: 12,
+                      fontSize: 16,
                       cursor: "pointer",
                       letterSpacing: "0.08em",
                     }}
@@ -1022,7 +1021,7 @@ export default function Map() {
                     color: PALETTE.cream,
                     border: `1px solid ${PALETTE.ink}`,
                     fontFamily: FONT_BODY,
-                    fontSize: 12,
+                    fontSize: 16,
                     cursor: "pointer",
                     letterSpacing: "0.1em",
                   }}
@@ -1036,7 +1035,7 @@ export default function Map() {
               <div
                 style={{
                   fontFamily: FONT_BODY,
-                  fontSize: 13,
+                  fontSize: 16,
                   marginBottom: 10,
                   padding: "8px 12px",
                   background: "#fff8e0",
@@ -1284,6 +1283,7 @@ export default function Map() {
                           }
                           fill="#fff"
                           letterSpacing="0.02em"
+                          aria-hidden="true"
                         >
                           {d.mono ?? "•"}
                         </text>
@@ -1317,7 +1317,7 @@ export default function Map() {
                           y={y - 16}
                           fontFamily={FONT_BODY}
                           fontWeight={600}
-                          fontSize={13}
+                          fontSize={14}
                           fill={PALETTE.cream}
                         >
                           {d.name}
@@ -1326,7 +1326,7 @@ export default function Map() {
                           x={lx + 8}
                           y={y}
                           fontFamily={FONT_BODY}
-                          fontSize={12}
+                          fontSize={14}
                           fill={PALETTE.gold}
                           letterSpacing="0.1em"
                         >
@@ -1356,7 +1356,7 @@ export default function Map() {
                   gap: 20,
                   alignItems: "center",
                   fontFamily: FONT_BODY,
-                  fontSize: 12,
+                  fontSize: 16,
                   letterSpacing: "0.12em",
                   textTransform: "uppercase",
                   color: PALETTE.muted,
@@ -1408,7 +1408,7 @@ export default function Map() {
                 margin: 0,
                 borderBottom: `1px solid ${PALETTE.ink}`,
                 fontFamily: FONT_BODY,
-                fontSize: 12,
+                fontSize: 16,
                 fontWeight: 600,
                 letterSpacing: "0.18em",
                 textTransform: "uppercase",
@@ -1494,20 +1494,20 @@ export default function Map() {
                             aria-hidden="true"
                             style={{
                               fontFamily: FONT_BODY,
-                              fontSize: 12,
+                              fontSize: 16,
                               color: PALETTE.faint,
                             }}
                           >
                             {String(i + 1).padStart(3, "0")}
                           </div>
                           <div>
-                            <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.2 }}>
+                            <div style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.2 }}>
                               {d.name}
                             </div>
                             <div
                               style={{
                                 fontFamily: FONT_BODY,
-                                fontSize: 12,
+                                fontSize: 16,
                                 color: PALETTE.faint,
                                 marginTop: 2,
                                 letterSpacing: "0.05em",
@@ -1534,7 +1534,7 @@ export default function Map() {
                         style={{
                           padding: "12px 18px",
                           borderBottom: `1px solid ${PALETTE.paleRule}`,
-                          fontSize: 12,
+                          fontSize: 16,
                           color: PALETTE.muted,
                           fontStyle: "italic",
                           background: PALETTE.cream,
@@ -1591,20 +1591,20 @@ export default function Map() {
                       aria-hidden="true"
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 12,
+                        fontSize: 16,
                         color: PALETTE.faint,
                       }}
                     >
                       {String(i + 1).padStart(3, "0")}
                     </div>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.2 }}>
+                      <div style={{ fontSize: 16, fontWeight: 600, lineHeight: 1.2 }}>
                         {d.name}
                       </div>
                       <div
                         style={{
                           fontFamily: FONT_BODY,
-                          fontSize: 12,
+                          fontSize: 16,
                           color: PALETTE.faint,
                           marginTop: 2,
                           letterSpacing: "0.05em",
@@ -1656,7 +1656,7 @@ export default function Map() {
             paddingTop: 16,
             borderTop: `1px solid ${PALETTE.paleRule}`,
             fontFamily: FONT_BODY,
-            fontSize: 12,
+            fontSize: 16,
             color: PALETTE.faint,
             letterSpacing: "0.12em",
             textTransform: "uppercase",
@@ -1680,7 +1680,7 @@ function ToggleButton({ active, onClick, children }) {
         color: active ? PALETTE.cream : PALETTE.ink,
         border: `1px solid ${PALETTE.ink}`,
         fontFamily: FONT_BODY,
-        fontSize: 12,
+        fontSize: 16,
         cursor: "pointer",
         letterSpacing: "0.1em",
       }}
@@ -1704,7 +1704,7 @@ function SectionHeading({ num, title, id }) {
         aria-hidden="true"
         style={{
           fontFamily: FONT_BODY,
-          fontSize: "0.8125rem",
+          fontSize: "1rem",
           letterSpacing: "0.18em",
           color: PALETTE.maroonMuted,
           fontWeight: 600,
@@ -1780,7 +1780,7 @@ function ParetoChart({ data }) {
               y={y + 3}
               textAnchor="end"
               fontFamily={FONT_BODY}
-              fontSize={12}
+              fontSize={14}
               fill={PALETTE.faint}
             >
               {p}%
@@ -1818,7 +1818,7 @@ function ParetoChart({ data }) {
               x={x + 6}
               y={y - 6}
               fontFamily={FONT_BODY}
-              fontSize={12}
+              fontSize={14}
               fill={PALETTE.ink}
               fontWeight={600}
             >
@@ -1838,8 +1838,8 @@ function ParetoChart({ data }) {
         x={pad.l}
         y={H - 10}
         fontFamily={FONT_BODY}
-        fontSize={12}
-        fill="#666"
+        fontSize={14}
+        fill="#2A2A2A"
       >
         1
       </text>
@@ -1848,8 +1848,8 @@ function ParetoChart({ data }) {
         y={H - 10}
         textAnchor="end"
         fontFamily={FONT_BODY}
-        fontSize={12}
-        fill="#666"
+        fontSize={14}
+        fill="#2A2A2A"
       >
         {data.length}
       </text>
@@ -1858,8 +1858,8 @@ function ParetoChart({ data }) {
         y={H - 10}
         textAnchor="middle"
         fontFamily={FONT_BODY}
-        fontSize={12}
-        fill="#666"
+        fontSize={14}
+        fill="#2A2A2A"
         letterSpacing="0.1em"
       >
         SCHOOL RANK →
@@ -1918,7 +1918,7 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "baseline",
-                fontSize: 13,
+                fontSize: 16,
                 marginBottom: 3,
               }}
             >
@@ -1926,7 +1926,7 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }
               <span
                 style={{
                   fontFamily: FONT_BODY,
-                  fontSize: "0.75rem",
+                  fontSize: "1rem",
                   color: PALETTE.inkSecondary,
                 }}
               >
@@ -2004,7 +2004,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           <h3
             style={{
               fontFamily: FONT_BODY,
-              fontSize: "0.75rem",
+              fontSize: "1rem",
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: PALETTE.maroonMuted,
@@ -2027,7 +2027,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           <h3
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 12,
+              fontSize: 16,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: PALETTE.maroonMuted,
@@ -2055,7 +2055,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "baseline",
-                      fontSize: 13,
+                      fontSize: 16,
                       marginBottom: 3,
                     }}
                   >
@@ -2063,7 +2063,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 12,
+                        fontSize: 16,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2087,7 +2087,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
             style={{
               marginTop: 10,
               fontFamily: FONT_BODY,
-              fontSize: 12,
+              fontSize: 16,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
               color: PALETTE.faint,
@@ -2118,7 +2118,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           <h3
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 12,
+              fontSize: 16,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: PALETTE.maroonMuted,
@@ -2145,7 +2145,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "baseline",
-                      fontSize: 13,
+                      fontSize: 16,
                       marginBottom: 3,
                     }}
                   >
@@ -2153,7 +2153,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 12,
+                        fontSize: 16,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2179,7 +2179,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           <h3
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 12,
+              fontSize: 16,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: PALETTE.maroonMuted,
@@ -2206,7 +2206,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "baseline",
-                      fontSize: 13,
+                      fontSize: 16,
                       marginBottom: 3,
                     }}
                   >
@@ -2214,7 +2214,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 12,
+                        fontSize: 16,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2296,7 +2296,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
         <div
           style={{
             fontFamily: FONT_BODY,
-            fontSize: 12,
+            fontSize: 16,
             letterSpacing: "0.2em",
             color: themeColor,
             fontWeight: 600,
@@ -2325,7 +2325,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
             color: PALETTE.cream,
             border: `1px solid ${PALETTE.ink}`,
             fontFamily: FONT_BODY,
-            fontSize: 12,
+            fontSize: 16,
             cursor: "pointer",
             letterSpacing: "0.1em",
           }}
@@ -2346,7 +2346,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
           <h3
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 12,
+              fontSize: 16,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: themeColor,
@@ -2373,7 +2373,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "baseline",
-                      fontSize: 13,
+                      fontSize: 16,
                       marginBottom: 3,
                       gap: 8,
                     }}
@@ -2382,7 +2382,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 12,
+                        fontSize: 16,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2399,7 +2399,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
               <div
                 style={{
                   marginTop: 12,
-                  fontSize: 12,
+                  fontSize: 16,
                   color: PALETTE.muted,
                   fontStyle: "italic",
                 }}
@@ -2415,7 +2415,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
           <h3
             style={{
               fontFamily: FONT_BODY,
-              fontSize: 12,
+              fontSize: 16,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
               color: themeColor,
@@ -2433,7 +2433,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
             }}
           >
             {namedLean.length === 0 && (
-              <div style={{ fontSize: 13, color: PALETTE.muted, fontStyle: "italic" }}>
+              <div style={{ fontSize: 16, color: PALETTE.muted, fontStyle: "italic" }}>
                 No school is over-indexed on {theme} above the global average of{" "}
                 {Math.round(globalShare * 100)}%.
               </div>
@@ -2447,7 +2447,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "baseline",
-                      fontSize: 13,
+                      fontSize: 16,
                       marginBottom: 3,
                       gap: 8,
                     }}
@@ -2456,7 +2456,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
                     <span
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 12,
+                        fontSize: 16,
                         color: PALETTE.inkSecondary,
                       }}
                     >
@@ -2490,7 +2490,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
               <div
                 style={{
                   marginTop: 12,
-                  fontSize: 12,
+                  fontSize: 16,
                   color: PALETTE.muted,
                   fontStyle: "italic",
                 }}
