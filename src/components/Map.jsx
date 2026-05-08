@@ -1462,7 +1462,7 @@ export default function Map() {
                           key={d.unitid + "-" + i}
                           role="button"
                           tabIndex={0}
-                          aria-label={`${d.name}, ${total} ${onlyTheme ? dispLabel(onlyTheme) + " " : ""}submissions of ${d.count} total. Activate to spotlight on the map.`}
+                          aria-label={`${d.name}. ${d.cityState} · ${total} of ${d.count}. ${total} ${onlyTheme ? dispLabel(onlyTheme) + " " : ""}submissions. Activate to spotlight on the map.`}
                           onMouseEnter={() => setHovered(d.unitid)}
                           onMouseLeave={() => setHovered(null)}
                           onClick={() => {
@@ -1558,7 +1558,7 @@ export default function Map() {
                     key={d.unitid + "-" + i}
                     role="button"
                     tabIndex={0}
-                    aria-label={`${d.name}, ${scaleMode === "count" ? `${d.count} applications` : `${d.perCapita.toFixed(2)} apps per 1k students`}. Activate to spotlight on the map.`}
+                    aria-label={`${d.name}. ${d.cityState}. ${scaleMode === "count" ? `${d.count} applications` : `${d.perCapita.toFixed(2)} apps per 1k students`}. Activate to spotlight on the map.`}
                     onMouseEnter={() => setHovered(d.unitid)}
                     onMouseLeave={() => setHovered(null)}
                     onClick={() => {
