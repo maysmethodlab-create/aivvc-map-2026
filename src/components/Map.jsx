@@ -508,7 +508,7 @@ export default function Map() {
           </p>
           <p style={{ margin: "12px 0 0 0", fontSize: "1rem", color: PALETTE.inkSecondary }}>
             <a
-              href="https://mays.tamu.edu/ai/competition/"
+              href="https://mays.tamu.edu/ai/competition/ai-competition-details/"
               style={{
                 color: PALETTE.maroonDeep,
                 fontWeight: 600,
