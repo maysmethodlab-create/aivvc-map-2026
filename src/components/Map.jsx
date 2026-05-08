@@ -1000,7 +1000,8 @@ export default function Map() {
                     <span
                       style={{
                         marginLeft: 6,
-                        color: active ? "rgba(255,255,255,0.7)" : "#999",
+                        color: active ? "#FFFFFF" : PALETTE.inkMuted,
+                        fontWeight: 600,
                       }}
                     >
                       {n}
