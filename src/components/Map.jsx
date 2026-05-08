@@ -1082,13 +1082,14 @@ export default function Map() {
                 background: PALETTE.paper,
                 border: `1px solid ${PALETTE.ink}`,
                 position: "relative",
+                aspectRatio: `${W} / ${H}`,
               }}
             >
               <svg
                 viewBox={`0 0 ${W} ${H}`}
                 role="img"
                 aria-label={`Map of the United States showing ${TOTAL_INSTITUTIONS_DISPLAY} institutions that submitted to the AI Venture Velocity Challenge. ${selectedRegion ? `Currently spotlighting the ${selectedRegion} region.` : ""}${hasThemeFilter ? ` Currently filtered to show schools with submissions in: ${[...selectedThemes].map(dispLabel).join(", ")}.` : ""}`}
-                style={{ width: "100%", height: "auto", display: "block" }}
+                style={{ width: "100%", height: "100%", display: "block" }}
               >
                 <defs>
                   <filter
