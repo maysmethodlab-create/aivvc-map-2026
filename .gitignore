@@ -5,3 +5,6 @@ dist/
 .DS_Store
 .local/
 anamnesis_sample.pdf
+
+# Lighthouse audit reports
+lh-*.json
