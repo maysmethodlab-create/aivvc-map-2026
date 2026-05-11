@@ -383,10 +383,6 @@ export default function Map() {
     return CARNEGIE_ORDER.map((k) => map[k]).filter(Boolean);
   }, []);
 
-  const top10Apps = top10.reduce((s, x) => s + x.count, 0);
-  const top30Apps = sorted.slice(0, 30).reduce((s, x) => s + x.count, 0);
-  const longTailInstitutions = RAW.filter((d) => d.count === 1).length;
-
   const getDotColor = (d) => {
     if (colorMode === "carnegie") {
       const k = carnegieKey(d);
@@ -738,7 +734,7 @@ export default function Map() {
           className="stat-strip"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
+            gridTemplateColumns: "repeat(2, 1fr)",
             gap: 0,
             marginBottom: 28,
             borderTop: `1px solid ${PALETTE.ink}`,
@@ -748,17 +744,12 @@ export default function Map() {
           {[
             { num: TOTAL_APPS_DISPLAY, label: "Applications" },
             { num: TOTAL_INSTITUTIONS_DISPLAY, label: "Institutions" },
-            { num: top10Apps, label: "From the 10 Schools With the Most Submissions" },
-            {
-              num: Math.round((top10Apps / TOTAL_APPS) * 100) + "%",
-              label: "Share From the 10 Highest-Submitting Schools",
-            },
           ].map((s, i) => (
             <div
               key={i}
               style={{
                 padding: "18px 20px",
-                borderRight: i < 3 ? `1px solid ${PALETTE.ink}` : "none",
+                borderRight: i < 1 ? `1px solid ${PALETTE.ink}` : "none",
               }}
             >
               <div
