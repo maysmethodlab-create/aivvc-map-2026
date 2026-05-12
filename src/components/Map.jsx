@@ -96,11 +96,13 @@ const STATE_FULL_NAMES = {
 };
 
 const RAW = RAW_DATA;
-// Per Hari (2026-05-12): display the exact data totals, not rounded
-// externally-cited numbers. Confirmed dataset = 529 applications across 152
-// institutions with geographic data. All percentages use the same total.
-const TOTAL_APPS_DISPLAY = 529;
-const TOTAL_INSTITUTIONS_DISPLAY = 152;
+// Headline totals match Levi's externally-cited numbers (used in social
+// media and program communications). Regional / institutional breakdowns
+// below are based on applications matched to a specific institution and
+// geographic location, which is a small number less in each case. The
+// caveat under the stat strip explains the gap.
+const TOTAL_APPS_DISPLAY = 528;
+const TOTAL_INSTITUTIONS_DISPLAY = 160;
 const TOTAL_APPS = RAW.reduce((s, x) => s + x.count, 0);
 const TOTAL_INSTITUTIONS = RAW.length;
 
@@ -779,6 +781,22 @@ export default function Map() {
             </div>
           ))}
         </div>
+        <p
+          style={{
+            fontFamily: FONT_BODY,
+            fontSize: 14,
+            color: PALETTE.inkMuted,
+            margin: "-16px 0 24px 0",
+            fontStyle: "italic",
+            maxWidth: 820,
+            lineHeight: 1.5,
+          }}
+        >
+          Headline totals reflect the program’s reconciled counts. Regional
+          and institutional breakdowns below are based on applications
+          matched to a specific institution and geographic location; a small
+          number have not yet been matched.
+        </p>
 
         {/* Region rollup */}
         <section aria-labelledby="region-heading" style={{ marginBottom: 32 }}>
