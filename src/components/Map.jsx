@@ -31,36 +31,36 @@ const THEME_COLORS = {
 };
 
 const TAG_DISPLAY = {
-  "llm-app": "LLM application",
-  "decision-support": "Decision support",
-  "data-analytics": "Data & analytics",
-  "workflow-automation": "Workflow automation",
-  "computer-vision": "Computer vision",
-  "ai-agents": "AI agents",
-  "voice-ai": "Voice / audio AI",
+  "llm-app": "LLM Application",
+  "decision-support": "Decision Support",
+  "data-analytics": "Data and Analytics",
+  "workflow-automation": "Workflow Automation",
+  "computer-vision": "Computer Vision",
+  "ai-agents": "AI Agents",
+  "voice-ai": "Voice/Audio AI",
   marketplace: "Marketplace",
-  "search-retrieval": "Search / retrieval",
+  "search-retrieval": "Search/Retrieval",
   robotics: "Robotics",
   biotech: "Biotech",
-  "video-gen": "Video generation",
-  "image-gen": "Image generation",
-  "developer-tools": "Developer tools",
+  "video-gen": "Video Generation",
+  "image-gen": "Image Generation",
+  "developer-tools": "Developer Tools",
 };
 
 const STAGE_DISPLAY = {
   idea: "Idea",
   prototype: "Prototype",
   mvp: "Working MVP",
-  traction: "Has traction",
+  traction: "Has Traction",
 };
 
 const TARGET_DISPLAY = {
   consumer: "Consumer",
-  smb: "Small / mid-market",
+  smb: "Small/Mid-Market",
   enterprise: "Enterprise",
   government: "Government",
   research: "Research",
-  mixed: "Mixed segments",
+  mixed: "Mixed Segments",
 };
 
 // Census-region lookup keyed by full state name (matches us-atlas TopoJSON properties.name).
@@ -96,11 +96,11 @@ const STATE_FULL_NAMES = {
 };
 
 const RAW = RAW_DATA;
-// Computed total from data is 529; Levi reports 528 externally (single-app
-// reconciliation diff). We display 528 to stay consistent with Levi's
-// communications. Percentage math still uses the computed total.
-const TOTAL_APPS_DISPLAY = 528;
-const TOTAL_INSTITUTIONS_DISPLAY = 160; // Levi's external number; deduped data has 152
+// Per Hari (2026-05-12): display the exact data totals, not rounded
+// externally-cited numbers. Confirmed dataset = 529 applications across 152
+// institutions with geographic data. All percentages use the same total.
+const TOTAL_APPS_DISPLAY = 529;
+const TOTAL_INSTITUTIONS_DISPLAY = 152;
 const TOTAL_APPS = RAW.reduce((s, x) => s + x.count, 0);
 const TOTAL_INSTITUTIONS = RAW.length;
 
@@ -163,11 +163,11 @@ function titleCase(str) {
 const CARNEGIE_DISPLAY = {
   R1: "R1: Very High Research",
   R2: "R2: High Research",
-  DPU: "Doctoral / Professional",
-  Masters: "Master's",
+  DPU: "Doctoral/Professional",
+  Masters: "Master’s",
   Baccalaureate: "Baccalaureate",
-  BaccAssoc: "Baccalaureate / Associate's",
-  Associates: "Associate's",
+  BaccAssoc: "Baccalaureate/Associate’s",
+  Associates: "Associate’s",
   SpecialFocus: "Special Focus",
   Tribal: "Tribal College",
   NotApplicable: "Other",
@@ -499,8 +499,8 @@ export default function Map() {
             }}
           >
             {TOTAL_APPS_DISPLAY} applications. {TOTAL_INSTITUTIONS_DISPLAY} institutions.
-            The inaugural Challenge drew submissions from research universities,
-            regional campuses, liberal arts colleges, master's-focused universities,
+            The inaugural challenge drew submissions from research universities,
+            regional campuses, liberal arts colleges, master’s-focused universities,
             community colleges, and technical colleges across all four U.S. Census regions.
           </p>
           <p style={{ margin: "12px 0 0 0", fontSize: "1rem", color: PALETTE.inkSecondary }}>
@@ -851,7 +851,7 @@ export default function Map() {
                       color: PALETTE.inkSecondary,
                     }}
                   >
-                    {r.share.toFixed(1)}%
+                    {Math.round(r.share)}%
                   </div>
                 </div>
                 <div
@@ -941,8 +941,8 @@ export default function Map() {
             >
               <span style={{ color: PALETTE.inkSecondary }}>Rank by:</span>
               {[
-                { id: "count", label: "Total apps" },
-                { id: "percapita", label: "Per 1k students" },
+                { id: "count", label: "Total Applications" },
+                { id: "percapita", label: "Per 1,000 Students" },
               ].map((opt) => (
                 <ToggleButton
                   key={opt.id}
@@ -1329,11 +1329,11 @@ export default function Map() {
                               const tc = themeCountForSchool(d.unitid);
                               const themeLabel = onlyTheme || "selected themes";
                               if (tc !== null) {
-                                return `${tc} ${dispLabel(themeLabel).toUpperCase()} APP${tc !== 1 ? "S" : ""}`;
+                                return `${tc} ${dispLabel(themeLabel).toUpperCase()} APPLICATION${tc !== 1 ? "S" : ""}`;
                               }
-                              return `1–2 ${dispLabel(themeLabel).toUpperCase()} APPS`;
+                              return `1–2 ${dispLabel(themeLabel).toUpperCase()} APPLICATIONS`;
                             }
-                            return `${d.count} APP${d.count !== 1 ? "S" : ""} · ${carnLabel}`;
+                            return `${d.count} APPLICATION${d.count !== 1 ? "S" : ""} · ${carnLabel}`;
                           })()}
                         </text>
                       </g>
@@ -1416,7 +1416,7 @@ export default function Map() {
                 ? `Ranked: ${onlyTheme ? dispLabel(onlyTheme) + " " : ""}Submissions`
                 : scaleMode === "count"
                 ? "Ranked: Total Applications"
-                : "Ranked: Apps per 1k Students"}
+                : "Ranked: Applications per 1,000 Students"}
             </h3>
             {(() => {
               // When a theme is selected, build a theme-specific ranking.
@@ -1551,7 +1551,7 @@ export default function Map() {
                     key={d.unitid + "-" + i}
                     role="button"
                     tabIndex={0}
-                    aria-label={`${d.name}. ${d.cityState}. ${scaleMode === "count" ? `${d.count} applications` : `${d.perCapita.toFixed(2)} apps per 1k students`}. Activate to spotlight on the map.`}
+                    aria-label={`${d.name}. ${d.cityState}. ${scaleMode === "count" ? `${d.count} applications` : `${d.perCapita.toFixed(2)} applications per 1,000 students`}. Activate to spotlight on the map.`}
                     onMouseEnter={() => setHovered(d.unitid)}
                     onMouseLeave={() => setHovered(null)}
                     onClick={() => {
@@ -1649,6 +1649,18 @@ export default function Map() {
             marginTop: 24,
             paddingTop: 16,
             borderTop: `1px solid ${PALETTE.paleRule}`,
+            fontFamily: FONT_BODY,
+            fontSize: 14,
+            color: PALETTE.inkMuted,
+            textAlign: "center",
+            fontStyle: "italic",
+            marginBottom: 10,
+          }}
+        >
+          Percentages throughout this page are rounded to whole numbers and may not sum to exactly 100.
+        </div>
+        <div
+          style={{
             fontFamily: FONT_BODY,
             fontSize: 16,
             color: PALETTE.faint,
@@ -1878,8 +1890,8 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }
         const colorKey = d.key || d.label;
         const meta =
           d.schools !== undefined
-            ? `${d.apps} apps · ${d.schools} schools · ${pct.toFixed(1)}%`
-            : `${d.apps} ventures · ${pct.toFixed(1)}%`;
+            ? `${d.apps} applications · ${d.schools} schools · ${Math.round(pct)}%`
+            : `${d.apps} ventures · ${Math.round(pct)}%`;
         const isActiveRow =
           onRowClick && (isActive ? isActive(colorKey) : activeKey === colorKey);
         const RowEl = onRowClick ? "button" : "div";
@@ -1965,13 +1977,18 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
 
   const stageMax = Math.max(...stages.map((s) => s.apps), 1);
   const targetMax = Math.max(...targets.map((t) => t.apps), 1);
+  // Section 04's stage and target categories are mutually exclusive and cover
+  // every classified venture (438), not just the 434 with a readable industry
+  // theme. Use the actual sum to make percentages add up correctly.
+  const stageTotal = stages.reduce((s, x) => s + x.apps, 0) || 1;
+  const targetTotal = targets.reduce((s, x) => s + x.apps, 0) || 1;
 
   return (
     <>
       {/* Section 03: Where the building is happening */}
       <section aria-labelledby="where-heading">
       <div style={{ marginBottom: 8 }}>
-        <SectionHeading id="where-heading" num="03" title="Where the building is happening" />
+        <SectionHeading id="where-heading" num="03" title="Where the Building is Happening" />
       </div>
       <p
         style={{
@@ -2015,6 +2032,19 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
             onRowClick={(k) => toggleTheme(k)}
             isActive={(k) => selectedThemes.has(k)}
           />
+          <p
+            style={{
+              marginTop: 10,
+              marginBottom: 0,
+              fontFamily: FONT_BODY,
+              fontSize: 14,
+              color: PALETTE.inkMuted,
+              lineHeight: 1.5,
+              fontStyle: "italic",
+            }}
+          >
+            Industry percentages are based on 434 classifiable venture snapshots. Applications without enough structured information for this analysis are excluded.
+          </p>
         </div>
 
         <div>
@@ -2029,7 +2059,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
               fontWeight: 600,
             }}
           >
-            What's Powering Them
+            What’s Powering Them
           </h3>
           <div
             style={{
@@ -2077,18 +2107,19 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
               );
             })}
           </div>
-          <div
+          <p
             style={{
               marginTop: 10,
+              marginBottom: 0,
               fontFamily: FONT_BODY,
-              fontSize: 16,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: PALETTE.faint,
+              fontSize: 14,
+              color: PALETTE.inkMuted,
+              lineHeight: 1.5,
+              fontStyle: "italic",
             }}
           >
-            Themes inferred from {readableTotal} submitted snapshots ({Math.round((readableTotal / TOTAL_APPS_DISPLAY) * 100)}% coverage).
-          </div>
+            Categories are not mutually exclusive; ventures may appear in more than one AI-use category.
+          </p>
         </div>
       </div>
 
@@ -2097,8 +2128,21 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
       {/* Section 04: Who's Building */}
       <section aria-labelledby="who-heading">
       <div style={{ marginBottom: 14 }}>
-        <SectionHeading id="who-heading" num="04" title="Who's building" />
+        <SectionHeading id="who-heading" num="04" title="Who’s Building" />
       </div>
+      <p
+        style={{
+          fontFamily: FONT_BODY,
+          fontSize: 16,
+          color: PALETTE.inkSecondary,
+          margin: "0 0 18px 0",
+          maxWidth: 760,
+          lineHeight: 1.5,
+        }}
+      >
+        Venture stage and target customer are based on the 438 applications
+        with that information classified.
+      </p>
       <div
         className="who-grid"
         style={{
@@ -2131,7 +2175,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           >
             {stages.map((s) => {
               const w = (s.apps / stageMax) * 100;
-              const pct = (s.apps / readableTotal) * 100;
+              const pct = (s.apps / stageTotal) * 100;
               return (
                 <div key={s.key} style={{ marginBottom: 10 }}>
                   <div
@@ -2192,7 +2236,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           >
             {targets.map((t) => {
               const w = (t.apps / targetMax) * 100;
-              const pct = (t.apps / readableTotal) * 100;
+              const pct = (t.apps / targetTotal) * 100;
               return (
                 <div key={t.key} style={{ marginBottom: 10 }}>
                   <div
@@ -2342,7 +2386,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
               }}
             >
               The two panels above are drawn from the {confirmedTotal} teams that have completed
-              the post-application Confirmation Form. The remaining {528 - confirmedTotal} applications
+              the post-application Confirmation Form. The remaining {TOTAL_APPS_DISPLAY - confirmedTotal} applications
               had not returned a profile when this snapshot was generated.
             </p>
           </>
@@ -2535,7 +2579,7 @@ function ThemeFocusPanel({ theme, allInstitutions, themeByUnitidSafe, themePrese
               fontWeight: 600,
             }}
           >
-            Lean — {theme.split(" ")[0].toLowerCase()} as % of school's mix
+            Lean — {theme.split(" ")[0].toLowerCase()} as % of school’s mix
           </h3>
           <div
             style={{
