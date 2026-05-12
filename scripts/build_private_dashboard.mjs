@@ -901,4 +901,21 @@ const dashboard = {
 const outPath = path.join(ROOT, "src/data/private_dashboard.json");
 fs.writeFileSync(outPath, JSON.stringify(dashboard, null, 2));
 console.error(`Wrote dashboard JSON: ${outPath}`);
+
+// Slim slice that the PUBLIC site (Map.jsx) consumes for the "Who's building"
+// section. Per Levi: surface college mix (B1) and student level (C2). Nothing
+// else from the private dashboard is exposed publicly.
+const publicProfile = {
+  generatedAt: dashboard.generatedAt,
+  totals: {
+    confirmedTeams: dashboard.totals.deduped,
+    applicationsTotal: 528,
+  },
+  collegeMix: dashboard.sectionB_diversity.collegeMix,
+  studentLevel: dashboard.sectionC_who.studentLevel,
+};
+const publicPath = path.join(ROOT, "src/data/team_profile_public.json");
+fs.writeFileSync(publicPath, JSON.stringify(publicProfile, null, 2) + "\n");
+console.error(`Wrote public profile slice: ${publicPath}`);
+
 console.error("Done.");

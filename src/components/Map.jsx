@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import * as d3 from "d3";
 import RAW_DATA from "../data/institutions.json";
 import THEMES from "../data/themes.json";
+import TEAM_PROFILE from "../data/team_profile_public.json";
 
 const THEME_ORDER = [
   "Healthcare",
@@ -2229,6 +2230,124 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
           </div>
         </div>
       </div>
+
+      {/* Section 04, row 2: who the builders themselves are. Confirmation-form basis. */}
+      {(() => {
+        const collegeMix = TEAM_PROFILE?.collegeMix || [];
+        const studentLevel = TEAM_PROFILE?.studentLevel || [];
+        const confirmedTotal = TEAM_PROFILE?.totals?.confirmedTeams || 0;
+        const collegeMax = Math.max(1, ...collegeMix.map((d) => d.count));
+        const levelMax = Math.max(1, ...studentLevel.map((d) => d.count));
+        const Bar = ({ items, max, total, color }) => (
+          <div
+            style={{
+              background: PALETTE.paper,
+              border: `1px solid ${PALETTE.ink}`,
+              padding: 18,
+            }}
+          >
+            {items.map((d) => {
+              const w = (d.count / max) * 100;
+              const pct = total ? (d.count / total) * 100 : 0;
+              return (
+                <div key={d.label} style={{ marginBottom: 10 }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "baseline",
+                      fontSize: 16,
+                      marginBottom: 3,
+                    }}
+                  >
+                    <span style={{ fontWeight: 600 }}>{d.label}</span>
+                    <span
+                      style={{
+                        fontFamily: FONT_BODY,
+                        fontSize: 16,
+                        color: PALETTE.inkSecondary,
+                      }}
+                    >
+                      {d.count} · {pct.toFixed(0)}%
+                    </span>
+                  </div>
+                  <div style={{ height: 8, background: PALETTE.paleRule }}>
+                    <div
+                      style={{
+                        width: `${w}%`,
+                        height: "100%",
+                        background: color,
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+        return (
+          <>
+            <div
+              className="who-grid"
+              style={{
+                marginTop: 8,
+                marginBottom: 12,
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 24,
+              }}
+            >
+              <div>
+                <h3
+                  style={{
+                    fontFamily: FONT_BODY,
+                    fontSize: 16,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: PALETTE.maroonMuted,
+                    margin: "0 0 8px 0",
+                    fontWeight: 600,
+                  }}
+                >
+                  Home College or School
+                </h3>
+                <Bar items={collegeMix} max={collegeMax} total={confirmedTotal} color={PALETTE.maroon} />
+              </div>
+              <div>
+                <h3
+                  style={{
+                    fontFamily: FONT_BODY,
+                    fontSize: 16,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: PALETTE.maroonMuted,
+                    margin: "0 0 8px 0",
+                    fontWeight: 600,
+                  }}
+                >
+                  Student Level
+                </h3>
+                <Bar items={studentLevel} max={levelMax} total={confirmedTotal} color={PALETTE.maroon} />
+              </div>
+            </div>
+            <p
+              style={{
+                fontFamily: FONT_BODY,
+                fontSize: 14,
+                color: PALETTE.inkMuted,
+                marginTop: 0,
+                marginBottom: 32,
+                fontStyle: "italic",
+                maxWidth: 760,
+              }}
+            >
+              The two panels above are drawn from the {confirmedTotal} teams that have completed
+              the post-application Confirmation Form. The remaining {528 - confirmedTotal} applications
+              had not returned a profile when this snapshot was generated.
+            </p>
+          </>
+        );
+      })()}
       </section>
     </>
   );

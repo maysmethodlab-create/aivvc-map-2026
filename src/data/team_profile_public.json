@@ -1,0 +1,71 @@
+{
+  "generatedAt": "2026-05-12T12:19:15.298Z",
+  "totals": {
+    "confirmedTeams": 441,
+    "applicationsTotal": 528
+  },
+  "collegeMix": [
+    {
+      "label": "Engineering",
+      "count": 155
+    },
+    {
+      "label": "Business / management",
+      "count": 154
+    },
+    {
+      "label": "Sciences",
+      "count": 44
+    },
+    {
+      "label": "Other",
+      "count": 37
+    },
+    {
+      "label": "Computing / informatics",
+      "count": 18
+    },
+    {
+      "label": "Liberal arts / humanities",
+      "count": 12
+    },
+    {
+      "label": "Medicine / health",
+      "count": 11
+    },
+    {
+      "label": "Education",
+      "count": 8
+    },
+    {
+      "label": "Public policy / affairs",
+      "count": 1
+    },
+    {
+      "label": "Agriculture",
+      "count": 1
+    }
+  ],
+  "studentLevel": [
+    {
+      "label": "Undergraduate",
+      "count": 238
+    },
+    {
+      "label": "Graduate student",
+      "count": 183
+    },
+    {
+      "label": "PhD / doctoral",
+      "count": 1
+    },
+    {
+      "label": "Community / technical college",
+      "count": 3
+    },
+    {
+      "label": "Recent grad / alum",
+      "count": 16
+    }
+  ]
+}
