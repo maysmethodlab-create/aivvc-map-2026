@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React from "react";
 import { createRoot } from "react-dom/client";
 import "@fontsource/oswald/400.css";
 import "@fontsource/oswald/500.css";
@@ -11,24 +11,18 @@ import "@fontsource/work-sans/700.css";
 import "@fontsource/work-sans/400-italic.css";
 import Map from "./components/Map.jsx";
 
-// Obscure slug for the AIVVC core-team dashboard. Render's SPA rewrite
-// (render.yaml) serves index.html for any path, so this works on deep links.
+// PRIVACY: the internal /levi-hari-private dashboard is intentionally NOT
+// imported here. Even though that route was password-gated, Render serves
+// the underlying JavaScript chunk as a public static asset, which meant
+// anyone could fetch the verbatim student responses by reading the chunk
+// path out of the public bundle. To eliminate that risk entirely, the
+// private dashboard is excluded from the production build. The source
+// files (src/components/PrivateDashboard.jsx and src/data/private_dashboard.json)
+// remain in the repo for internal viewing via `npm run dev` on a trusted
+// machine; they simply do not ship to Render or to any handoff zip.
 //
-// PRIVACY: PrivateDashboard imports a JSON file containing verbatim student
-// quotes. We code-split it so it ONLY downloads when the user navigates to
-// /levi-hari-private. Public visitors at "/" never fetch the chunk, which
-// keeps the team-level qualitative data out of the public JavaScript bundle.
-const PrivateDashboard = lazy(() => import("./components/PrivateDashboard.jsx"));
+// The /levi-hari-private URL on the live site will now render the public
+// Map (Render's SPA rewrite serves index.html for any path), which is the
+// safest possible fallback.
 
-const path = typeof window !== "undefined" ? window.location.pathname : "/";
-const isPrivate = /^\/levi-hari-private\/?$/i.test(path);
-
-createRoot(document.getElementById("root")).render(
-  isPrivate ? (
-    <Suspense fallback={null}>
-      <PrivateDashboard />
-    </Suspense>
-  ) : (
-    <Map />
-  )
-);
+createRoot(document.getElementById("root")).render(<Map />);
