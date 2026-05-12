@@ -26,6 +26,41 @@ const FONT_BODY = "'Work Sans', Arial, sans-serif";
 
 const N = 441; // baseline: deduped unique teams with a Team ID
 
+// Build vs. validate categorization for the F1 hope-to-learn themes.
+// "build" = about making the thing (which AI now compresses to near-zero).
+// "validate" = about reading customer signal, problem definition, judgment.
+// "other" = neutral or unclassifiable.
+const HOPE_KIND = {
+  ship_mvp: "build",
+  technical_validation: "build",
+  validate_demand_pricing: "validate",
+  acquire_paying_customers: "validate",
+  customer_discovery_pmf: "validate",
+  user_testing_feedback: "validate",
+  growth_traction_metrics: "validate",
+  gtm_positioning: "validate",
+  secure_pilots_partnerships: "validate",
+  business_model_strategy: "validate",
+  learn_build_startup: "other",
+  unclassified: "other",
+};
+
+const KIND_STYLE = {
+  build: { label: "Build", color: "#7A3838", bg: "#F5EFEF" },
+  validate: { label: "Validate", color: "#3C0000", bg: "#E0C9C9" },
+  other: { label: null, color: PALETTE.inkMuted, bg: PALETTE.bgSubtle },
+};
+
+// Teams whose hope-to-learn responses frame the dashboard's thesis:
+// the bottleneck is judgment, not building. Looked up by teamId across
+// any F1 theme's quotes so the kicker tracks the live data.
+const KICKER_TEAM_IDS = [
+  "AIVVC-2026-VCH54", // problem definition via discovery
+  "AIVVC-2026-MQT6V", // engagement does not equal revenue validation
+  "AIVVC-2026-T2SEW", // learning to pivot, hypothesis testing
+  "AIVVC-2026-C8P52", // organizations feeling the need
+];
+
 // ---------- Shared primitives ----------
 
 function Pct({ count, total = N, digits = 0 }) {
@@ -398,7 +433,7 @@ function Crosstab({ rows, cols, cells, rowLabel = "" }) {
   );
 }
 
-function ThemeCard({ theme, total }) {
+function ThemeCard({ theme, total, kind }) {
   if (theme.id === "unclassified") {
     return (
       <div
@@ -417,15 +452,33 @@ function ThemeCard({ theme, total }) {
       </div>
     );
   }
+  const kindStyle = kind && KIND_STYLE[kind] ? KIND_STYLE[kind] : null;
+  const showKind = kindStyle && kindStyle.label;
   return (
     <div
       style={{
         marginBottom: 14,
         border: `1px solid ${PALETTE.lineSoft}`,
+        borderLeft: showKind ? `3px solid ${kindStyle.color}` : `1px solid ${PALETTE.lineSoft}`,
         padding: "14px 16px",
         background: PALETTE.bg,
       }}
     >
+      {showKind && (
+        <div
+          style={{
+            fontFamily: FONT_BODY,
+            fontSize: 11,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: kindStyle.color,
+            fontWeight: 700,
+            marginBottom: 4,
+          }}
+        >
+          {kindStyle.label}
+        </div>
+      )}
       <div
         style={{
           display: "flex",
@@ -506,7 +559,7 @@ function ThemeCard({ theme, total }) {
   );
 }
 
-function ThemeList({ themeBlock }) {
+function ThemeList({ themeBlock, kindMap }) {
   const total = themeBlock.totalResponses || N;
   // Sort by count descending, unclassified always last.
   const sorted = [...themeBlock.themes].sort((a, b) => {
@@ -517,8 +570,130 @@ function ThemeList({ themeBlock }) {
   return (
     <div>
       {sorted.map((th) => (
-        <ThemeCard key={th.id} theme={th} total={total} />
+        <ThemeCard
+          key={th.id}
+          theme={th}
+          total={total}
+          kind={kindMap ? kindMap[th.id] : undefined}
+        />
       ))}
+    </div>
+  );
+}
+
+// Build vs. validate distribution across the F1 hope-to-learn themes.
+// Renders a small framing line above the theme list.
+function BuildValidateLens({ themes }) {
+  let build = 0;
+  let validate = 0;
+  for (const th of themes) {
+    const kind = HOPE_KIND[th.id];
+    if (kind === "build") build += th.count;
+    else if (kind === "validate") validate += th.count;
+  }
+  if (build + validate === 0) return null;
+  const ratio = build > 0 ? validate / build : null;
+  return (
+    <div
+      style={{
+        border: `1px solid ${PALETTE.lineSoft}`,
+        background: PALETTE.bgPanel,
+        padding: "12px 14px",
+        marginBottom: 14,
+      }}
+    >
+      <div
+        style={{
+          fontFamily: FONT_BODY,
+          fontSize: 11,
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: PALETTE.maroonMuted,
+          fontWeight: 700,
+          marginBottom: 6,
+        }}
+      >
+        A lens on F1
+      </div>
+      <div
+        style={{
+          display: "flex",
+          gap: 24,
+          alignItems: "baseline",
+          flexWrap: "wrap",
+          marginBottom: 6,
+        }}
+      >
+        <div>
+          <span
+            style={{
+              fontFamily: FONT_DISPLAY,
+              fontVariantNumeric: "tabular-nums",
+              fontSize: 22,
+              fontWeight: 600,
+              color: KIND_STYLE.validate.color,
+            }}
+          >
+            {validate}
+          </span>
+          <span
+            style={{
+              fontFamily: FONT_BODY,
+              fontSize: 13,
+              color: PALETTE.inkSecondary,
+              marginLeft: 8,
+            }}
+          >
+            asks about knowing <em>what</em> to build
+          </span>
+        </div>
+        <div>
+          <span
+            style={{
+              fontFamily: FONT_DISPLAY,
+              fontVariantNumeric: "tabular-nums",
+              fontSize: 22,
+              fontWeight: 600,
+              color: KIND_STYLE.build.color,
+            }}
+          >
+            {build}
+          </span>
+          <span
+            style={{
+              fontFamily: FONT_BODY,
+              fontSize: 13,
+              color: PALETTE.inkSecondary,
+              marginLeft: 8,
+            }}
+          >
+            asks about <em>how</em> to build it
+          </span>
+        </div>
+        {ratio !== null && (
+          <div
+            style={{
+              fontFamily: FONT_BODY,
+              fontSize: 13,
+              color: PALETTE.inkMuted,
+            }}
+          >
+            Roughly <strong style={{ color: PALETTE.inkSecondary }}>{ratio.toFixed(2)}</strong> validation-flavored asks per build-flavored ask.
+          </div>
+        )}
+      </div>
+      <p
+        style={{
+          fontFamily: FONT_BODY,
+          fontSize: 12,
+          lineHeight: 1.5,
+          margin: 0,
+          color: PALETTE.inkMuted,
+          maxWidth: 760,
+        }}
+      >
+        Categorization is on theme intent, not exact wording: build = ship MVP, technical validation. Validate = customer discovery, willingness-to-pay, user testing, pilots, business model, GTM. Other / general-learning themes excluded from the ratio.
+      </p>
     </div>
   );
 }
@@ -926,7 +1101,10 @@ function SectionF() {
         note="Verified: every quote shown is a verbatim substring of an actual form response (anonymized for emails/URLs)."
       >
         {f.hopeToLearn?.themes ? (
-          <ThemeList themeBlock={f.hopeToLearn} />
+          <>
+            <BuildValidateLens themes={f.hopeToLearn.themes} />
+            <ThemeList themeBlock={f.hopeToLearn} kindMap={HOPE_KIND} />
+          </>
         ) : (
           <em>Themes not yet generated.</em>
         )}
@@ -1383,6 +1561,92 @@ function Header() {
   );
 }
 
+// Looks up the kicker quotes across all hopeToLearn themes by teamId.
+// Returns the verbatim text + teamId for any KICKER_TEAM_IDS still present
+// in the data. Falls back to nothing if the theme rebuild dropped a quote.
+function collectKickerQuotes() {
+  const out = [];
+  const themes = DATA.sectionF_qualitative?.hopeToLearn?.themes || [];
+  for (const teamId of KICKER_TEAM_IDS) {
+    let found = null;
+    for (const th of themes) {
+      const q = (th.quotes || []).find((x) => x.teamId === teamId);
+      if (q) {
+        found = { teamId: q.teamId, text: q.text };
+        break;
+      }
+    }
+    if (found) out.push(found);
+  }
+  return out;
+}
+
+function Kicker() {
+  const quotes = collectKickerQuotes();
+  if (quotes.length === 0) return null;
+  return (
+    <aside
+      aria-label="What teams say they want to figure out"
+      style={{
+        border: `1px solid ${PALETTE.lineSoft}`,
+        background: PALETTE.bgPanel,
+        padding: "18px 20px",
+        marginBottom: 24,
+      }}
+    >
+      <div
+        style={{
+          fontFamily: FONT_BODY,
+          fontSize: 11,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          color: PALETTE.maroonMuted,
+          fontWeight: 700,
+          marginBottom: 8,
+        }}
+      >
+        What teams say they want to figure out
+      </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: 18,
+        }}
+      >
+        {quotes.map((q) => (
+          <blockquote
+            key={q.teamId}
+            style={{
+              margin: 0,
+              paddingLeft: 12,
+              borderLeft: `3px solid ${PALETTE.maroonMuted}`,
+              fontFamily: FONT_BODY,
+              fontSize: 14,
+              lineHeight: 1.55,
+              color: PALETTE.inkSecondary,
+              fontStyle: "italic",
+            }}
+          >
+            “{q.text}”
+            <div
+              style={{
+                fontStyle: "normal",
+                fontSize: 11,
+                color: PALETTE.inkMuted,
+                marginTop: 6,
+                letterSpacing: "0.05em",
+              }}
+            >
+              — {q.teamId}
+            </div>
+          </blockquote>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
 function TableOfContents() {
   const items = [
     ["A", "Pipeline & data hygiene", "sec-A"],
@@ -1477,6 +1741,7 @@ function DashboardBody() {
 
       <main style={{ maxWidth: 1240, margin: "0 auto", padding: "28px 24px 48px" }}>
         <Header />
+        <Kicker />
         <TableOfContents />
         <div id="sec-A"><SectionA /></div>
         <div id="sec-B"><SectionB /></div>
