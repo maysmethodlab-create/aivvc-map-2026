@@ -1,16 +1,20 @@
 {
-  "generatedAt": "2026-05-12T12:03:22.416Z",
+  "generatedAt": "2026-05-12T12:19:15.298Z",
   "totals": {
     "raw": 466,
+    "blankTeamIdRows": 22,
+    "nonEmptyTeamIdRows": 444,
+    "trueDuplicatesCollapsed": 3,
     "deduped": 441,
-    "dedupRemoved": 25,
     "dedupRule": "Keep latest Timestamp per Team ID"
   },
   "sectionA_pipeline": {
     "rawRows": 466,
+    "blankTeamIdRows": 22,
+    "nonEmptyTeamIdRows": 444,
+    "trueDuplicatesCollapsed": 3,
     "uniqueTeams": 441,
-    "duplicatesRemoved": 25,
-    "rule": "Latest submission per Team ID is retained."
+    "rule": "Rows with no Team ID are excluded. Among rows with a Team ID, the latest submission per Team ID is retained."
   },
   "sectionB_diversity": {
     "collegeMix": [
@@ -417,19 +421,23 @@
     "studentLevel": [
       {
         "label": "Undergraduate",
-        "count": 237
+        "count": 238
       },
       {
-        "label": "Doctoral",
+        "label": "Graduate student",
+        "count": 183
+      },
+      {
+        "label": "PhD / doctoral",
         "count": 1
+      },
+      {
+        "label": "Community / technical college",
+        "count": 3
       },
       {
         "label": "Recent grad / alum",
         "count": 16
-      },
-      {
-        "label": "Other",
-        "count": 187
       }
     ],
     "gradYear": [
@@ -528,24 +536,32 @@
   "sectionD_venture": {
     "stage": [
       {
-        "label": "Idea / discovery",
-        "count": 133
-      },
-      {
-        "label": "Prototype",
-        "count": 239
-      },
-      {
-        "label": "Working MVP",
-        "count": 4
-      },
-      {
-        "label": "Has traction",
+        "label": "Brand-new idea",
         "count": 41
       },
       {
-        "label": "Other",
-        "count": 24
+        "label": "Customer discovery",
+        "count": 92
+      },
+      {
+        "label": "Prototype / MVP in progress",
+        "count": 146
+      },
+      {
+        "label": "Prototype / MVP built",
+        "count": 92
+      },
+      {
+        "label": "Launched / in beta",
+        "count": 43
+      },
+      {
+        "label": "Revenue-generating",
+        "count": 13
+      },
+      {
+        "label": "Incorporated company",
+        "count": 14
       }
     ],
     "priorVentureByStage": {
@@ -555,33 +571,41 @@
         "Other"
       ],
       "cols": [
-        "Idea / discovery",
-        "Prototype",
-        "Working MVP",
-        "Has traction",
-        "Other"
+        "Brand-new idea",
+        "Customer discovery",
+        "Prototype / MVP in progress",
+        "Prototype / MVP built",
+        "Launched / in beta",
+        "Revenue-generating",
+        "Incorporated company"
       ],
       "cells": [
         [
-          45,
-          110,
-          2,
-          27,
-          15
-        ],
-        [
-          60,
-          74,
-          1,
-          5,
-          4
-        ],
-        [
-          28,
-          55,
-          1,
           9,
-          5
+          36,
+          66,
+          43,
+          27,
+          9,
+          9
+        ],
+        [
+          25,
+          35,
+          48,
+          26,
+          7,
+          2,
+          1
+        ],
+        [
+          7,
+          21,
+          32,
+          23,
+          9,
+          2,
+          4
         ]
       ]
     },
@@ -601,11 +625,13 @@
     ],
     "stageByTeamSize": {
       "rows": [
-        "Idea / discovery",
-        "Prototype",
-        "Working MVP",
-        "Has traction",
-        "Other"
+        "Brand-new idea",
+        "Customer discovery",
+        "Prototype / MVP in progress",
+        "Prototype / MVP built",
+        "Launched / in beta",
+        "Revenue-generating",
+        "Incorporated company"
       ],
       "cols": [
         "1 (solo)",
@@ -617,31 +643,39 @@
       ],
       "cells": [
         [
-          49,
-          50,
-          17,
-          12,
-          2,
+          21,
+          15,
+          1,
+          3,
+          1,
+          0
+        ],
+        [
+          28,
+          35,
+          16,
+          9,
+          1,
           3
         ],
         [
-          79,
-          69,
-          47,
-          31,
-          6,
-          7
+          48,
+          42,
+          30,
+          20,
+          3,
+          3
         ],
         [
-          1,
-          2,
-          0,
-          0,
-          0,
-          1
-        ],
-        [
+          30,
+          27,
+          17,
           11,
+          3,
+          4
+        ],
+        [
+          13,
           15,
           7,
           4,
@@ -649,10 +683,18 @@
           3
         ],
         [
+          1,
+          6,
+          3,
           2,
-          9,
-          7,
+          0,
+          1
+        ],
+        [
+          1,
+          5,
           4,
+          2,
           0,
           2
         ]
@@ -662,24 +704,36 @@
   "sectionE_ai": {
     "selfRated": [
       {
+        "label": "Building with AI",
+        "count": 243
+      },
+      {
+        "label": "Expert / building custom AI",
+        "count": 2
+      },
+      {
+        "label": "Advanced users",
+        "count": 64
+      },
+      {
+        "label": "Mixed across the team",
+        "count": 34
+      },
+      {
+        "label": "Regular users",
+        "count": 74
+      },
+      {
+        "label": "Occasional users",
+        "count": 12
+      },
+      {
         "label": "Beginner",
-        "count": 9
-      },
-      {
-        "label": "Comfortable / intermediate",
-        "count": 75
-      },
-      {
-        "label": "Advanced / power user",
-        "count": 66
-      },
-      {
-        "label": "Builds AI products",
-        "count": 242
+        "count": 10
       },
       {
         "label": "Other",
-        "count": 49
+        "count": 2
       }
     ],
     "toolsUsed": [
@@ -774,101 +828,173 @@
     ],
     "experienceByStage": {
       "rows": [
+        "Building with AI",
+        "Expert / building custom AI",
+        "Advanced users",
+        "Mixed across the team",
+        "Regular users",
+        "Occasional users",
         "Beginner",
-        "Comfortable / intermediate",
-        "Advanced / power user",
-        "Builds AI products",
         "Other"
       ],
       "cols": [
-        "Idea / discovery",
-        "Prototype",
-        "Working MVP",
-        "Has traction",
-        "Other"
+        "Brand-new idea",
+        "Customer discovery",
+        "Prototype / MVP in progress",
+        "Prototype / MVP built",
+        "Launched / in beta",
+        "Revenue-generating",
+        "Incorporated company"
       ],
       "cells": [
         [
-          6,
-          3,
+          13,
+          40,
+          75,
+          62,
+          33,
+          9,
+          11
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
           0,
           0,
           0
         ],
         [
-          32,
-          39,
-          0,
-          2,
-          2
-        ],
-        [
-          21,
-          37,
-          0,
+          4,
+          16,
+          22,
+          14,
           7,
+          0,
           1
         ],
         [
-          53,
-          136,
           4,
-          31,
-          18
+          9,
+          9,
+          9,
+          1,
+          1,
+          1
         ],
         [
-          21,
-          24,
+          12,
+          20,
+          31,
+          7,
+          2,
+          2,
+          0
+        ],
+        [
+          3,
+          4,
+          4,
+          0,
           0,
           1,
-          3
+          0
+        ],
+        [
+          4,
+          3,
+          3,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1
         ]
       ]
     },
     "experienceByStudentLevel": {
       "rows": [
+        "Building with AI",
+        "Expert / building custom AI",
+        "Advanced users",
+        "Mixed across the team",
+        "Regular users",
+        "Occasional users",
         "Beginner",
-        "Comfortable / intermediate",
-        "Advanced / power user",
-        "Builds AI products",
         "Other"
       ],
       "cols": [
         "Undergraduate",
-        "Doctoral",
-        "Recent grad / alum",
-        "Other"
+        "Graduate student",
+        "PhD / doctoral",
+        "Community / technical college",
+        "Recent grad / alum"
       ],
       "cells": [
         [
-          3,
+          143,
+          90,
           0,
           0,
-          6
+          10
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          33,
+          27,
+          0,
+          1,
+          3
+        ],
+        [
+          16,
+          18,
+          0,
+          0,
+          0
         ],
         [
           36,
+          35,
           1,
-          2,
-          36
+          0,
+          2
         ],
         [
-          34,
+          5,
+          5,
           0,
+          1,
+          1
+        ],
+        [
           3,
-          29
-        ],
-        [
-          142,
-          0,
-          10,
-          90
-        ],
-        [
-          22,
+          6,
           0,
           1,
-          26
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          0
         ]
       ]
     }
@@ -903,8 +1029,8 @@
         },
         {
           "id": "acquire_paying_customers",
-          "name": "Acquire first paying customers or pilots",
-          "description": "Convert interest into signed paid pilots, paying users, revenue, or specific traction milestones (e.g., first 10 paying customers, MRR).",
+          "name": "Convert users or pilots into paid contracts",
+          "description": "Move past willingness-to-pay testing into signed paid pilots, paying subscribers, or measurable revenue (e.g., first 10 paying customers, MRR, paid pilot). Distinct from pricing or demand validation, which is bucketed separately.",
           "count": 25,
           "quotes": [
             {
@@ -1507,8 +1633,8 @@
         },
         {
           "id": "decision_support",
-          "name": "Make faster or better decisions",
-          "description": "Use AI as a decision-support partner to weigh options, interpret data, and play devil's advocate.",
+          "name": "AI primarily for decision support (narrow selection)",
+          "description": "Teams whose only or dominant selection on the multi-select form was decision-support uses (analysis, weighing options). On the broader multi-select itself, 297 of 441 teams (67%) include 'Make faster or better decisions' as one of many selections — this theme isolates the small group for whom it was the central expectation.",
           "count": 4,
           "quotes": [
             {
@@ -1655,7 +1781,7 @@
         },
         {
           "id": "acquire_paying_customers",
-          "name": "Acquire first paying customers or pilots"
+          "name": "Convert users or pilots into paid contracts"
         },
         {
           "id": "ship_mvp",
@@ -1700,120 +1826,120 @@
       ],
       "cols": [
         "Undergraduate",
-        "Master's",
-        "Doctoral",
-        "Postdoctoral",
+        "Graduate student",
+        "PhD / doctoral",
+        "Community / technical college",
         "Recent grad / alum",
         "Other",
         "Unspecified"
       ],
       "cells": [
         [
-          28,
+          29,
+          23,
           0,
-          0,
-          0,
+          1,
           2,
-          25,
+          0,
           0
         ],
         [
           18,
-          0,
+          6,
           0,
           0,
           1,
-          6,
+          0,
           0
         ],
         [
           41,
+          46,
           0,
-          0,
-          0,
+          2,
           7,
-          48,
+          0,
           0
         ],
         [
           47,
-          0,
+          51,
           0,
           0,
           3,
-          51,
+          0,
           0
         ],
         [
           21,
-          0,
+          6,
           0,
           0,
           1,
-          6,
+          0,
           0
         ],
         [
           30,
-          0,
-          1,
-          0,
-          1,
           24,
+          1,
+          0,
+          1,
+          0,
           0
         ],
         [
           6,
-          0,
-          0,
-          0,
-          0,
           2,
+          0,
+          0,
+          0,
+          0,
           0
         ],
         [
           7,
-          0,
+          6,
           0,
           0,
           1,
-          6,
+          0,
           0
         ],
         [
           6,
-          0,
-          0,
-          0,
-          0,
           1,
+          0,
+          0,
+          0,
+          0,
           0
         ],
         [
           18,
-          0,
-          0,
-          0,
-          0,
           11,
+          0,
+          0,
+          0,
+          0,
           0
         ],
         [
           7,
-          0,
-          0,
-          0,
-          0,
           2,
+          0,
+          0,
+          0,
+          0,
           0
         ],
         [
           8,
-          0,
-          0,
-          0,
-          0,
           5,
+          0,
+          0,
+          0,
+          0,
           0
         ]
       ]
@@ -1826,7 +1952,7 @@
         },
         {
           "id": "acquire_paying_customers",
-          "name": "Acquire first paying customers or pilots"
+          "name": "Convert users or pilots into paid contracts"
         },
         {
           "id": "ship_mvp",
@@ -1870,121 +1996,147 @@
         }
       ],
       "cols": [
-        "Idea / discovery",
-        "Prototype",
-        "Working MVP",
-        "Has traction",
-        "Scaling",
-        "Other",
+        "Brand-new idea",
+        "Customer discovery",
+        "Prototype / MVP in progress",
+        "Prototype / MVP built",
+        "Launched / in beta",
+        "Revenue-generating",
+        "Incorporated company",
+        "Other / multi-stage",
         "Unspecified"
       ],
       "cells": [
         [
-          19,
-          27,
-          0,
+          5,
+          14,
+          17,
+          10,
           9,
           0,
           0,
+          0,
           0
         ],
         [
           0,
-          14,
           0,
+          2,
+          12,
           7,
-          0,
-          4,
-          0
-        ],
-        [
-          35,
-          56,
-          0,
-          3,
-          0,
           2,
-          0
-        ],
-        [
-          41,
-          52,
-          1,
           2,
           0,
-          5,
-          0
-        ],
-        [
-          3,
-          14,
-          0,
-          8,
-          0,
-          3,
-          0
-        ],
-        [
-          13,
-          35,
-          1,
-          3,
-          0,
-          4,
-          0
-        ],
-        [
-          1,
-          4,
-          1,
-          2,
-          0,
-          0,
-          0
-        ],
-        [
-          2,
-          8,
-          1,
-          1,
-          0,
-          2,
-          0
-        ],
-        [
-          0,
-          4,
-          0,
-          2,
-          0,
-          1,
           0
         ],
         [
           11,
-          14,
+          24,
+          41,
+          15,
+          3,
           0,
+          2,
+          0,
+          0
+        ],
+        [
+          11,
+          30,
+          33,
+          19,
+          2,
+          3,
+          3,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          10,
+          4,
+          9,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          5,
+          8,
+          17,
+          17,
+          3,
+          2,
+          4,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          3,
+          2,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          4,
+          4,
+          2,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          2,
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          4,
+          7,
+          13,
+          1,
           3,
           0,
           1,
+          0,
           0
         ],
         [
+          2,
+          4,
+          0,
+          2,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
           6,
-          2,
-          0,
-          0,
-          0,
+          3,
           1,
-          0
-        ],
-        [
-          2,
-          9,
-          0,
           1,
           0,
-          1,
+          0,
           0
         ]
       ]
@@ -2197,64 +2349,82 @@
         "Instagram"
       ],
       "cols": [
-        "Idea / discovery",
-        "Prototype",
-        "Working MVP",
-        "Has traction",
-        "Other"
+        "Brand-new idea",
+        "Customer discovery",
+        "Prototype / MVP in progress",
+        "Prototype / MVP built",
+        "Launched / in beta",
+        "Revenue-generating",
+        "Incorporated company"
       ],
       "cells": [
         [
-          57,
-          97,
-          2,
-          16,
-          4
-        ],
-        [
-          20,
-          50,
-          1,
-          7,
-          10
-        ],
-        [
-          34,
+          21,
+          36,
+          59,
           37,
-          0,
-          6,
-          7
-        ],
-        [
-          11,
-          20,
-          1,
-          5,
+          17,
+          4,
           2
         ],
         [
-          3,
+          6,
           14,
-          0,
+          29,
+          21,
+          7,
           5,
+          6
+        ],
+        [
+          7,
+          27,
+          22,
+          15,
+          6,
+          4,
+          3
+        ],
+        [
+          3,
+          8,
+          13,
+          7,
+          6,
+          0,
+          2
+        ],
+        [
+          1,
+          2,
+          7,
+          7,
+          5,
+          0,
           0
         ],
         [
-          5,
-          10,
-          0,
           2,
+          3,
+          6,
+          4,
+          2,
+          0,
           0
         ],
         [
-          2,
-          10,
+          1,
+          1,
+          9,
+          1,
           0,
           0,
           1
         ],
         [
+          0,
           1,
+          0,
           0,
           0,
           0,
@@ -2262,7 +2432,9 @@
         ],
         [
           0,
+          0,
           1,
+          0,
           0,
           0,
           0
@@ -2283,61 +2455,71 @@
       ],
       "cols": [
         "Undergraduate",
-        "Doctoral",
-        "Recent grad / alum",
-        "Other"
+        "Graduate student",
+        "PhD / doctoral",
+        "Community / technical college",
+        "Recent grad / alum"
       ],
       "cells": [
         [
           73,
+          96,
           0,
-          5,
-          98
+          2,
+          5
         ],
         [
           59,
+          26,
           0,
-          2,
-          27
+          1,
+          2
         ],
         [
           45,
+          33,
           0,
-          6,
-          33
-        ],
-        [
-          26,
-          1,
           0,
-          12
-        ],
-        [
-          14,
-          0,
-          1,
-          7
-        ],
-        [
-          10,
-          0,
-          1,
           6
         ],
         [
-          8,
-          0,
+          26,
+          12,
           1,
-          4
+          0,
+          0
+        ],
+        [
+          14,
+          7,
+          0,
+          0,
+          1
+        ],
+        [
+          11,
+          5,
+          0,
+          0,
+          1
+        ],
+        [
+          8,
+          4,
+          0,
+          0,
+          1
         ],
         [
           1,
+          0,
           0,
           0,
           0
         ],
         [
           1,
+          0,
           0,
           0,
           0

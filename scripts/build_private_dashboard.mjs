@@ -184,57 +184,93 @@ function bucketTeamSize(s) {
 const TEAM_SIZE_ORDER = ["1 (solo)", "2", "3", "4", "5–6", "7+", "Unspecified"];
 
 function bucketStudentLevel(s) {
+  // Form options (per inspection of unique values):
+  //   "Undergraduate Student", "Graduate Student", "PhD",
+  //   "Recent graduate who was enrolled as of May 1, 2026",
+  //   "Community College / Technical College Student",
+  //   plus a small number of free-text edge cases.
   if (!s) return "Unspecified";
   const t = s.toLowerCase();
-  if (t.includes("undergrad")) return "Undergraduate";
-  if (t.includes("master")) return "Master's";
-  if (t.includes("phd") || t.includes("doctor")) return "Doctoral";
-  if (t.includes("postdoc")) return "Postdoctoral";
-  if (t.includes("recent grad") || t.includes("alum")) return "Recent grad / alum";
+  if (t.includes("undergrad") || t.includes("incoming freshman")) return "Undergraduate";
+  if (t.includes("community college") || t.includes("technical college")) return "Community / technical college";
+  if (t === "phd" || t.startsWith("phd") || t.includes("doctoral") || t.includes("doctorate"))
+    return "PhD / doctoral";
+  if (t.includes("graduate student") || t.includes("masters") || t.includes("master’s") || t.includes("master's"))
+    return "Graduate student";
+  if (t.includes("recent graduate") || t.includes("alum")) return "Recent grad / alum";
   return "Other";
 }
 const STUDENT_LEVEL_ORDER = [
   "Undergraduate",
-  "Master's",
-  "Doctoral",
-  "Postdoctoral",
+  "Graduate student",
+  "PhD / doctoral",
+  "Community / technical college",
   "Recent grad / alum",
   "Other",
   "Unspecified",
 ];
 
 function bucketStage(s) {
+  // Form options (per inspection of unique values):
+  //   "Brand-new idea" / "Customer discovery / problem validation" /
+  //   "Prototype or MVP in progress" / "Prototype or MVP built" /
+  //   "Product launched with users" / "Revenue-generating" /
+  //   "Existing company or organization (i.e. legally incorporated)" + free-text edge cases.
   if (!s) return "Unspecified";
   const t = s.toLowerCase();
-  if (t.includes("customer discovery") || t.includes("problem validation") || t.includes("idea"))
-    return "Idea / discovery";
-  if (t.includes("prototype")) return "Prototype";
-  if (t.includes("mvp")) return "Working MVP";
-  if (t.includes("traction") || t.includes("paying") || t.includes("users")) return "Has traction";
-  if (t.includes("scale") || t.includes("scaling") || t.includes("growth")) return "Scaling";
-  return "Other";
+  if (t.includes("brand-new idea") || t === "idea") return "Brand-new idea";
+  if (t.includes("customer discovery") || t.includes("problem validation"))
+    return "Customer discovery";
+  if (t.includes("revenue")) return "Revenue-generating";
+  if (t.includes("incorporat") || t.includes("legally registered") || t.includes("legal entity"))
+    return "Incorporated company";
+  if (t.includes("product launched") || t.includes("launched with users") || t.includes("beta") || t.includes("first beta user") || t.includes("running"))
+    return "Launched / in beta";
+  if (t.includes("prototype or mvp in progress") || t.includes("mvp in progress") || (t.includes("prototype") && t.includes("in progress")))
+    return "Prototype / MVP in progress";
+  if (t.includes("prototype or mvp built") || t.includes("mvp built") || (t.includes("prototype") && t.includes("built")))
+    return "Prototype / MVP built";
+  if (t.includes("prototype") || t.includes("mvp")) return "Prototype / MVP in progress";
+  return "Other / multi-stage";
 }
-const STAGE_ORDER = ["Idea / discovery", "Prototype", "Working MVP", "Has traction", "Scaling", "Other", "Unspecified"];
+const STAGE_ORDER = [
+  "Brand-new idea",
+  "Customer discovery",
+  "Prototype / MVP in progress",
+  "Prototype / MVP built",
+  "Launched / in beta",
+  "Revenue-generating",
+  "Incorporated company",
+  "Other / multi-stage",
+  "Unspecified",
+];
 
 function bucketAIExperience(s) {
+  // Form options (per inspection of unique values):
+  //   "We are building with AI" / "Advanced users" / "Regular users" /
+  //   "Occasional users" / "Beginner" / "Mixed across the team"
+  //   + free-text expert-level outliers ("Expert: We build...", "PhD in progress...", etc.).
   if (!s) return "Unspecified";
   const t = s.toLowerCase();
-  if (t.includes("never") || t.includes("no experience")) return "None / new to AI";
-  if (t.includes("beginner") || t.includes("light") || t.includes("limited") || t.includes("basic") || t.includes("some experience"))
+  if (t.includes("building with ai") || t.includes("100% ai") || t.includes("ai-first") || t.includes("ai first"))
+    return "Building with AI";
+  if (t.includes("expert")) return "Expert / building custom AI";
+  if (t.includes("advanced")) return "Advanced users";
+  if (t.includes("mixed")) return "Mixed across the team";
+  if (t.includes("regular")) return "Regular users";
+  if (t.includes("occasional")) return "Occasional users";
+  if (t.includes("beginner") || t.includes("light") || t.includes("limited") || t.includes("basic") || t.includes("still learning"))
     return "Beginner";
-  if (t.includes("comfortable") || t.includes("intermediate") || t.includes("regular"))
-    return "Comfortable / intermediate";
-  if (t.includes("advanced") || t.includes("expert") || t.includes("daily") || t.includes("power user"))
-    return "Advanced / power user";
-  if (t.includes("build") || t.includes("ship") || t.includes("develop")) return "Builds AI products";
   return "Other";
 }
 const AI_EXP_ORDER = [
-  "None / new to AI",
+  "Building with AI",
+  "Expert / building custom AI",
+  "Advanced users",
+  "Mixed across the team",
+  "Regular users",
+  "Occasional users",
   "Beginner",
-  "Comfortable / intermediate",
-  "Advanced / power user",
-  "Builds AI products",
   "Other",
   "Unspecified",
 ];
@@ -454,10 +490,18 @@ const rawRows = rowsToObjects(parseCSV(csvText));
 console.error(`Read ${rawRows.length} raw form submissions`);
 
 // Dedup by Team ID — latest Timestamp wins.
+// Track three separate diagnostic numbers so Section A can report them
+// without conflating "rows with no Team ID at all" with "true duplicates."
+let blankTeamIdRows = 0;
+let nonEmptyTeamIdRows = 0;
 const latestByTeam = new Map();
 for (const r of rawRows) {
   const id = r[COL.teamId];
-  if (!id) continue;
+  if (!id) {
+    blankTeamIdRows++;
+    continue;
+  }
+  nonEmptyTeamIdRows++;
   const ts = parseTimestamp(r[COL.ts]);
   const prev = latestByTeam.get(id);
   if (!prev || ts > prev.__ts) {
@@ -466,10 +510,11 @@ for (const r of rawRows) {
 }
 const teams = [...latestByTeam.values()];
 teams.sort((a, b) => a.__ts - b.__ts);
-console.error(`Deduped to ${teams.length} unique Team IDs`);
+console.error(`Deduped to ${teams.length} unique Team IDs (raw=${rawRows.length}, blank Team ID=${blankTeamIdRows}, non-empty=${nonEmptyTeamIdRows}, true duplicates collapsed=${nonEmptyTeamIdRows - teams.length})`);
 
-// Track dedup details for Section A.
-const dedupRemoved = rawRows.length - teams.length;
+// "True duplicates" = non-empty submissions that share a Team ID with another row.
+// The script keeps the latest by Timestamp and collapses the rest.
+const trueDuplicatesCollapsed = nonEmptyTeamIdRows - teams.length;
 
 // ---------- Section B (Institutional diversity) ----------
 
@@ -784,15 +829,19 @@ const dashboard = {
   generatedAt: new Date().toISOString(),
   totals: {
     raw: rawRows.length,
+    blankTeamIdRows,
+    nonEmptyTeamIdRows,
+    trueDuplicatesCollapsed,
     deduped: teams.length,
-    dedupRemoved,
     dedupRule: "Keep latest Timestamp per Team ID",
   },
   sectionA_pipeline: {
     rawRows: rawRows.length,
+    blankTeamIdRows,
+    nonEmptyTeamIdRows,
+    trueDuplicatesCollapsed,
     uniqueTeams: teams.length,
-    duplicatesRemoved: dedupRemoved,
-    rule: "Latest submission per Team ID is retained.",
+    rule: "Rows with no Team ID are excluded. Among rows with a Team ID, the latest submission per Team ID is retained.",
   },
   sectionB_diversity: {
     collegeMix: counterToList(collegeCounter),

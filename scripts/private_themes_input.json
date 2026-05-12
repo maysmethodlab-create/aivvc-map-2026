@@ -28,8 +28,8 @@
       },
       {
         "id": "acquire_paying_customers",
-        "name": "Acquire first paying customers or pilots",
-        "description": "Convert interest into signed paid pilots, paying users, revenue, or specific traction milestones (e.g., first 10 paying customers, MRR).",
+        "name": "Convert users or pilots into paid contracts",
+        "description": "Move past willingness-to-pay testing into signed paid pilots, paying subscribers, or measurable revenue (e.g., first 10 paying customers, MRR, paid pilot). Distinct from pricing or demand validation, which is bucketed separately.",
         "count": 25,
         "quotes": [
           {
@@ -1075,8 +1075,8 @@
       },
       {
         "id": "decision_support",
-        "name": "Make faster or better decisions",
-        "description": "Use AI as a decision-support partner to weigh options, interpret data, and play devil's advocate.",
+        "name": "AI primarily for decision support (narrow selection)",
+        "description": "Teams whose only or dominant selection on the multi-select form was decision-support uses (analysis, weighing options). On the broader multi-select itself, 297 of 441 teams (67%) include 'Make faster or better decisions' as one of many selections — this theme isolates the small group for whom it was the central expectation.",
         "count": 4,
         "quotes": [
           {

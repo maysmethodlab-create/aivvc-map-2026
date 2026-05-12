@@ -537,20 +537,21 @@ function SectionA() {
       <Panel
         number="A1"
         title="Raw form → working set"
-        subtitle="Each metric below is computed from the 441-team working set, not the raw 466 rows."
+        subtitle={`The CSV had ${a.rawRows} rows. ${a.blankTeamIdRows} were submitted without a Team ID and excluded; the remaining ${a.nonEmptyTeamIdRows} include ${a.trueDuplicatesCollapsed} true duplicates (same Team ID, multiple submissions) which were collapsed to the latest. Every metric below is computed from the ${a.uniqueTeams}-team working set.`}
       >
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: 16,
+            gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+            gap: 12,
             marginBottom: 16,
           }}
         >
           <Stat label="Raw form rows" value={a.rawRows} />
+          <Stat label="Rows with blank Team ID (excluded)" value={a.blankTeamIdRows} />
+          <Stat label="Non-empty Team ID rows" value={a.nonEmptyTeamIdRows} />
+          <Stat label="True duplicates collapsed" value={a.trueDuplicatesCollapsed} />
           <Stat label="Unique Team IDs (working set)" value={a.uniqueTeams} highlight />
-          <Stat label="Duplicate-team submissions removed" value={a.duplicatesRemoved} />
-          <Stat label="Rows with blank Team ID (excluded)" value={a.rawRows - a.uniqueTeams - a.duplicatesRemoved} />
         </div>
         <p
           style={{
@@ -560,9 +561,7 @@ function SectionA() {
             margin: 0,
           }}
         >
-          <strong>Dedup rule:</strong> {a.rule} Rows submitted without a Team ID
-          (typically partial submissions or teams that did not record their ID)
-          are excluded from the working set.
+          <strong>Dedup rule:</strong> {a.rule}
         </p>
       </Panel>
     </>
