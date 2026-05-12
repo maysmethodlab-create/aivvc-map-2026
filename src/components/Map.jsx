@@ -133,6 +133,26 @@ const PALETTE = {
 const FONT_DISPLAY = "'Oswald', Arial, sans-serif";
 const FONT_BODY = "'Work Sans', Arial, sans-serif";
 
+// Round a list of values to integer percentages that sum to exactly 100.
+// The largest input value absorbs any rounding remainder, so the panel never
+// shows 99 or 101 due to per-row rounding. Use only for mutually-exclusive
+// breakdowns; do not use for non-mutually-exclusive panels like "What's
+// Powering Them" where the categories overlap.
+function roundedPercentages(values, total) {
+  if (!total || total <= 0) return values.map(() => 0);
+  const rounded = values.map((v) => Math.round((v / total) * 100));
+  const sum = rounded.reduce((s, x) => s + x, 0);
+  const delta = 100 - sum;
+  if (delta !== 0 && values.length > 0) {
+    let largestIdx = 0;
+    for (let i = 1; i < values.length; i++) {
+      if (values[i] > values[largestIdx]) largestIdx = i;
+    }
+    rounded[largestIdx] += delta;
+  }
+  return rounded;
+}
+
 // Helper: collapse spaces around slashes for inline display.
 function dispLabel(s) {
   return typeof s === "string" ? s.replace(/\s*\/\s*/g, "/") : s;
@@ -350,19 +370,21 @@ export default function Map() {
 
   const regionStats = useMemo(() => {
     const order = ["South", "Northeast", "West", "Midwest"];
-    return order.map((r) => {
+    const rows = order.map((r) => {
       const items = RAW.filter((d) => d.region === r);
       const apps = items.reduce((s, x) => s + x.count, 0);
       const top = items.sort((a, b) => b.count - a.count)[0];
       return {
         region: r,
         apps,
-        share: (apps / TOTAL_APPS) * 100,
+        rawShare: (apps / TOTAL_APPS) * 100,
         schools: items.length,
         topSchool: top?.name || "—",
         topCount: top?.count || 0,
       };
     });
+    const adjustedPcts = roundedPercentages(rows.map((r) => r.apps), TOTAL_APPS);
+    return rows.map((r, i) => ({ ...r, share: adjustedPcts[i] }));
   }, []);
 
   const paretoData = useMemo(() => {
@@ -871,7 +893,7 @@ export default function Map() {
                       color: PALETTE.inkSecondary,
                     }}
                   >
-                    {Math.round(r.share)}%
+                    {r.share}%
                   </div>
                 </div>
                 <div
@@ -1677,7 +1699,7 @@ export default function Map() {
             marginBottom: 10,
           }}
         >
-          Percentages throughout this page are rounded to whole numbers and may not sum to exactly 100.
+          * Percentages throughout this page are rounded to whole numbers. The largest category in each group absorbs any rounding remainder, so totals sum to exactly 100.
         </div>
         <div
           style={{
@@ -1896,6 +1918,7 @@ function ParetoChart({ data }) {
 
 function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }) {
   const max = Math.max(...data.map((d) => d.apps));
+  const adjustedPcts = roundedPercentages(data.map((d) => d.apps), total);
   return (
     <div
       style={{
@@ -1904,14 +1927,14 @@ function BarBreakdown({ data, total, colorMap, onRowClick, activeKey, isActive }
         padding: 18,
       }}
     >
-      {data.map((d) => {
-        const pct = (d.apps / total) * 100;
+      {data.map((d, i) => {
+        const pct = adjustedPcts[i];
         const w = max > 0 ? (d.apps / max) * 100 : 0;
         const colorKey = d.key || d.label;
         const meta =
           d.schools !== undefined
-            ? `${d.apps} applications · ${d.schools} schools · ${Math.round(pct)}%`
-            : `${d.apps} ventures · ${Math.round(pct)}%`;
+            ? `${d.apps} applications · ${d.schools} schools · ${pct}%`
+            : `${d.apps} ventures · ${pct}%`;
         const isActiveRow =
           onRowClick && (isActive ? isActive(colorKey) : activeKey === colorKey);
         const RowEl = onRowClick ? "button" : "div";
@@ -2193,9 +2216,11 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
               padding: 18,
             }}
           >
-            {stages.map((s) => {
+            {(() => {
+              const stagePcts = roundedPercentages(stages.map((s) => s.apps), stageTotal);
+              return stages.map((s, i) => {
               const w = (s.apps / stageMax) * 100;
-              const pct = (s.apps / stageTotal) * 100;
+              const pct = stagePcts[i];
               return (
                 <div key={s.key} style={{ marginBottom: 10 }}>
                   <div
@@ -2215,7 +2240,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                         color: PALETTE.inkSecondary,
                       }}
                     >
-                      {s.apps} · {pct.toFixed(0)}%
+                      {s.apps} · {pct}%
                     </span>
                   </div>
                   <div style={{ height: 8, background: PALETTE.paleRule }}>
@@ -2229,7 +2254,8 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                   </div>
                 </div>
               );
-            })}
+            });
+            })()}
           </div>
         </div>
 
@@ -2254,9 +2280,11 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
               padding: 18,
             }}
           >
-            {targets.map((t) => {
+            {(() => {
+              const targetPcts = roundedPercentages(targets.map((t) => t.apps), targetTotal);
+              return targets.map((t, i) => {
               const w = (t.apps / targetMax) * 100;
-              const pct = (t.apps / targetTotal) * 100;
+              const pct = targetPcts[i];
               return (
                 <div key={t.key} style={{ marginBottom: 10 }}>
                   <div
@@ -2276,7 +2304,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                         color: PALETTE.inkSecondary,
                       }}
                     >
-                      {t.apps} · {pct.toFixed(0)}%
+                      {t.apps} · {pct}%
                     </span>
                   </div>
                   <div style={{ height: 8, background: PALETTE.paleRule }}>
@@ -2290,7 +2318,8 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                   </div>
                 </div>
               );
-            })}
+            });
+            })()}
           </div>
         </div>
       </div>
@@ -2302,7 +2331,9 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
         const confirmedTotal = TEAM_PROFILE?.totals?.confirmedTeams || 0;
         const collegeMax = Math.max(1, ...collegeMix.map((d) => d.count));
         const levelMax = Math.max(1, ...studentLevel.map((d) => d.count));
-        const Bar = ({ items, max, total, color }) => (
+        const Bar = ({ items, max, total, color }) => {
+          const adjustedPcts = roundedPercentages(items.map((d) => d.count), total);
+          return (
           <div
             style={{
               background: PALETTE.paper,
@@ -2310,9 +2341,9 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
               padding: 18,
             }}
           >
-            {items.map((d) => {
+            {items.map((d, i) => {
               const w = (d.count / max) * 100;
-              const pct = total ? (d.count / total) * 100 : 0;
+              const pct = adjustedPcts[i];
               return (
                 <div key={d.label} style={{ marginBottom: 10 }}>
                   <div
@@ -2332,7 +2363,7 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
                         color: PALETTE.inkSecondary,
                       }}
                     >
-                      {d.count} · {pct.toFixed(0)}%
+                      {d.count} · {pct}%
                     </span>
                   </div>
                   <div style={{ height: 8, background: PALETTE.paleRule }}>
@@ -2348,7 +2379,8 @@ function ThemesSection({ selectedThemes, toggleTheme, carnegieStats }) {
               );
             })}
           </div>
-        );
+          );
+        };
         return (
           <>
             <div
