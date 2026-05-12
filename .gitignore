@@ -8,3 +8,10 @@ anamnesis_sample.pdf
 
 # Lighthouse audit reports
 lh-*.json
+
+# Private dashboard intermediate artifacts. Underscore-prefixed scripts are
+# one-off helpers and dumps used to produce the themes input; the deliverable
+# is scripts/private_themes_input.json + src/data/private_dashboard.json.
+scripts/_*
+scripts/__pycache__/
+scripts/*.pyc
