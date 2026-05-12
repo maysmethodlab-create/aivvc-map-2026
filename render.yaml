@@ -6,6 +6,22 @@ services:
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: false
     routes:
+      # Privacy hardening: block any direct fetch of the legacy
+      # PrivateDashboard JavaScript chunks. Render preserves old build
+      # artifacts across deploys, so stale chunks from earlier builds
+      # (which contained verbatim student application text) remained
+      # downloadable by chunk URL even after the source was removed.
+      # Redirect any such request to the public map so the data is
+      # unreachable via this hostname.
+      - type: redirect
+        source: /assets/PrivateDashboard-*
+        destination: /
+      - type: redirect
+        source: /assets/private_dashboard*
+        destination: /
+      # SPA fallback so deep links like /levi-hari-private serve the
+      # public bundle (which renders Map). With PrivateDashboard removed
+      # from main.jsx, /levi-hari-private just shows the public map.
       - type: rewrite
         source: /*
         destination: /index.html
